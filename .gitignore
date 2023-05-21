@@ -1,0 +1,7 @@
+.vs/
+[Bb]uild/
+[Dd]eveloper/
+
+**.vcxproj
+**.vcxproj.user
+**.sln
