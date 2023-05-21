@@ -1,0 +1,22 @@
+//
+// generated with xi project generator v0.1
+//
+
+#pragma once
+
+#include "architecture/game.h"
+
+class __game_name__ : public iGame{
+public:
+	__game_name__();
+	~__game_name__();
+
+	virtual void OnInitilize() override;
+
+	virtual void OnTick() override;
+
+	virtual void OnShutdown() override;
+
+};
+
+extern "C" _declspec(dllexport) iGame* CreateGame() { return new __game_name__(); }

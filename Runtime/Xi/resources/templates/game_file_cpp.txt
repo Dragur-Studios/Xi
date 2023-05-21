@@ -1,0 +1,27 @@
+//
+// generated with xi project generator v0.1
+//
+
+#include "__game_name__.h"
+
+__game_name__::__game_name__()
+{
+}
+
+__game_name__::~__game_name__()
+{
+}
+
+void __game_name__::OnInitilize()
+{
+
+}
+
+void __game_name__::OnTick()
+{
+	
+}
+
+void __game_name__::OnShutdown()
+{
+}

@@ -1,0 +1,12 @@
+Project Requirements
+-----------------------
+
+
+Destination Directory.	(this is where the project will be created)
+Destination Folder.		(this is the folder where all of the data will be put.)
+	Source Folder		(the folder where all of the project files get put for the game)
+	Build Folder		(the folder where the final build is to be built for the game)
+		** MUST CONTAIN ALL ENGINE BUILD FILES **
+	LUA control file	(the control file for the project, this dictates where the build is and what kind of project is being built)
+
+** DEFAULT PROJECT CONTROL FILE CONTENTS **

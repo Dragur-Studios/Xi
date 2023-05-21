@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Architecture">
+      <UniqueIdentifier>{282F98C7-1492-276C-BD17-6022A959F3EE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Debug">
+      <UniqueIdentifier>{0C95060D-78A9-2EBE-412B-D21DADFE2AEF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="IO">
+      <UniqueIdentifier>{FD735900-E9FF-870B-52AE-880B3E59880B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Project Generation">
+      <UniqueIdentifier>{48F33E05-34D7-FF5A-9D37-FAAD893AEADC}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Architecture\application.h">
+      <Filter>Architecture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Architecture\game.h">
+      <Filter>Architecture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Debug\debug.h">
+      <Filter>Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IO\FileSystem.h">
+      <Filter>IO</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Project Generation\attach.h">
+      <Filter>Project Generation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Project Generation\generate.h">
+      <Filter>Project Generation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\defs.h" />
+    <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\Architecture\window.h" />
+    <ClInclude Include="src\Architecture\project.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Architecture\application.cpp">
+      <Filter>Architecture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Architecture\game.cpp">
+      <Filter>Architecture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Debug\debug.cpp">
+      <Filter>Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="src\IO\FileSystem.cpp">
+      <Filter>IO</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Project Generation\generate.cpp">
+      <Filter>Project Generation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Architecture\window.cpp" />
+    <ClCompile Include="src\Architecture\project.cpp" />
+  </ItemGroup>
+</Project>
