@@ -27,4 +27,4 @@ public:
 };
 
 
-typedef iGame* (*XiGame)();
+typedef iGame* (*XiGameFunc)();

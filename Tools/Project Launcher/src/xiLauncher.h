@@ -3,10 +3,10 @@
 #include "architecture/application.h"
 #include "Debug/debug.h"
 
-class Editor : public iGameApplication {
+class XiLauncher : public iApplication {
 public:
-	Editor();
-	~Editor();
+	XiLauncher();
+	~XiLauncher();
 
 	virtual void OnInitilize() override;
 
@@ -15,8 +15,7 @@ public:
 	virtual void OnShutdown() override;
 
 	class Window* window;
-
 };
 
-extern "C" _declspec(dllexport) iApplication* CreateEditor();
+extern "C" _declspec(dllexport) iApplication* CreateProjectLauncher();
 

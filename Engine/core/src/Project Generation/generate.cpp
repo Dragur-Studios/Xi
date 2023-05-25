@@ -62,8 +62,15 @@ XiProject* ProjectGenerator::GenerateProject(ProjectGeneratorLocationInfo* ploca
     CreateVisualStudioBuildFile();
     BuildVisualStudioSolution();
     CreateSourceFiles();
-    XiProject* project = new XiProject(plocationInfo->Drive, plocationInfo->Filepath, plocationInfo->ProjectName);
-    BuildVisualStudioProject(project->GetRootFolder());
+
+    XiProject* project = new XiProject();
+    
+    project->drive = plocationInfo->Drive;
+    project->name = plocationInfo->ProjectName;
+    project->filepath = plocationInfo->Filepath;
+
+    BuildVisualStudioProject(project);
+    
     return project;
 }
 
@@ -193,13 +200,22 @@ void ProjectGenerator::BuildVisualStudioSolution()
     std::filesystem::current_path(lastWD);
 }
 
-void ProjectGenerator::BuildVisualStudioProject(const std::string& solutionFilepath)
+void ProjectGenerator::BuildVisualStudioProject(XiProject* pProjectData)
 {
-    LOG_INFO("Attepting to Build Visual Studio Project: " + solutionFilepath);
+    std::string root = pProjectData->drive + pProjectData->filepath + pProjectData->name + "\\";
+    std::string solution = pProjectData->name + ".sln";
+
+    std::string buildpath = "C:\\\"Program Files\"\\\"Microsoft Visual Studio\"\\2022\\Enterprise\\VC\\Auxiliary\\Build\\vcvars64.bat";
+    LOG_INFO("Attepting to Run: "+ buildpath + "\n" + root + solution);
+    
     // Construct the build command
-    std::string command = "call \"" + solutionFilepath + "\"";
+    
+    
+    
+    std::string command = "call cl"+ buildpath + " \"" + root  + solution + "\"";
 
     // Run the build command using the system function
+    
     int result = std::system(command.c_str());
 
     // Check the result of the system command

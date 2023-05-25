@@ -10,7 +10,15 @@ iApplication::~iApplication()
 {
 }
 
-void iApplication::Load(iGame*game)
+iGameApplication::iGameApplication()
+{
+}
+
+iGameApplication::~iGameApplication()
+{
+}
+
+void iGameApplication::Load(iGame*game)
 {
 	this->game = game;
 }

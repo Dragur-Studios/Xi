@@ -7,26 +7,26 @@
 
 /// DLL
 
-#define ATTACH_EDITOR(gameName) HMODULE editorDLL = LoadLibraryA("Runtime/Editor.dll");\
+#define ATTACH_EDITOR(project) HMODULE editorDLL = LoadLibraryA("Runtime/Editor.dll");\
 if (editorDLL == nullptr)\
 {\
 Debug::Log("Editor DLL has not been loaded!"); \
 return 1;\
 }\
-XiApplication createEditor = (XiApplication)GetProcAddress(editorDLL, "CreateEditor"); \
+XiGameApplicationFunc createEditor = (XiGameApplicationFunc)GetProcAddress(editorDLL, "CreateEditor"); \
 if (createEditor == nullptr)\
 {\
 Debug::Log("Editor Create Function Pointer Could Not Be found!!");\
 return 1;\
 }\
-iApplication* editor = createEditor();\
+iGameApplication* editor = createEditor();\
 if (editor == nullptr)\
 {\
 Debug::Log("Editor Creation Failed!");\
 return 1;\
 }\
 Debug::Log("Editor Created Successfully.");\
-ATTACH_GAME(editor, gameName); \
+ATTACH_GAME(editor, project); \
 editor->OnInitilize();\
 editor->OnTick();\
 editor->OnShutdown();\
@@ -39,13 +39,13 @@ if (playerDLL == nullptr)\
 Debug::Log("Player DLL has not been loaded!"); \
 return 1;\
 }\
-XiApplication createPlayer = (XiApplication)GetProcAddress(playerDLL, "CreatePlayer"); \
+XiGameApplicationFunc createPlayer = (XiGameApplicationFunc)GetProcAddress(playerDLL, "CreatePlayer"); \
 if (createPlayer == nullptr)\
 {\
 Debug::Log("Player Create Function Pointer Could Not Be found!!");\
 return 1;\
 }\
-iApplication* player = createPlayer();\
+iGameApplication* player = createPlayer();\
 if (player == nullptr)\
 {\
 Debug::Log("Player Creation Failed!");\
@@ -58,12 +58,12 @@ player->OnTick();\
 player->OnShutdown();\
 
 
-#define ATTACH_GAME(iapp, gameName) HMODULE gameDLL = LoadLibraryA((gameName->GetName() + ".dll").c_str()); \
+#define ATTACH_GAME(iapp, project) HMODULE gameDLL = LoadLibraryA((project->name + ".dll").c_str()); \
 if(gameDLL == nullptr){ \
 Debug::Log("Game Could Not Be Loaded"); \
 return -1;\
 }\
-XiGame createGamefn = (XiGame)GetProcAddress(gameDLL, "CreateGame");\
+XiGameFunc createGamefn = (XiGameFunc)GetProcAddress(gameDLL, "CreateGame");\
 if(createGamefn == nullptr)\
 {\
 Debug::Log("Create Game Function Not Found"); \

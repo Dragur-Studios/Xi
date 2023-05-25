@@ -2,7 +2,6 @@
 
 class iApplication
 {
-
 public:
 	iApplication();
 	virtual ~iApplication();
@@ -10,12 +9,20 @@ public:
 	virtual void OnInitilize() = 0;
 	virtual void OnTick() = 0;
 	virtual void OnShutdown() = 0;
+};
 
-	void Load(class iGame*);
 
-protected:
+class iGameApplication : public iApplication
+{
+public:
+	iGameApplication();
+	virtual ~iGameApplication();
+
+	void Load(class iGame* gamePtr);
+
 	class iGame* game;
 
 };
 
-typedef iApplication* (*XiApplication)();
+typedef iApplication* (*XiApplicationFunc)();
+typedef iGameApplication* (*XiGameApplicationFunc)();

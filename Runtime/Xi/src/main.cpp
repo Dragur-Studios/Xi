@@ -34,7 +34,7 @@ int main() {
 	std::getline(std::cin, project_name);
 
 	ProjectGeneratorLocationInfo createInfo{ };
-	createInfo.Drive = "Z:\\";
+	createInfo.Drive = "D:\\";
 	createInfo.Filepath = "Xi\\Projects\\";
 	createInfo.ProjectName = project_name;
 

@@ -7,9 +7,11 @@ workspace "Xi"
     
     -- Core Game Engine
 
-    include "engine/core"
+    include "engine/Core"
     
-    include "tools/editor"
+    include "tools/Editor"
+    include "tools/Project Launcher"
+
     include "runtime/xi"
 
 

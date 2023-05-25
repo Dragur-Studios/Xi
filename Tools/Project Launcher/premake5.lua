@@ -1,5 +1,5 @@
-project "Xi"
-    kind "consoleApp"
+project "Project Launcher"
+    kind "sharedLib"
 
     language "c++"
     cppdialect "c++latest"
@@ -8,8 +8,8 @@ project "Xi"
 
     configurations { "Debug",  "Release", "Distribution" }
 
-    targetdir ("../../Build/%{cfg.buildCfg}/")
-    objdir ("../../Build/%{cfg.buildCfg}/")
+    targetdir ("../../Build/%{cfg.buildCfg}/Runtime/")
+    objdir ("../../Build/%{cfg.buildCfg}/Runtime/")
 
     files {
         "src/**.h",
@@ -22,14 +22,25 @@ project "Xi"
 
         "../../engine/Core/src",
 
+        "../../dependencies/glad/",
+        "../../dependencies/glfw/",
+        "../../dependencies/glm/",
+        "../../dependencies/imgui/",
+
+
+
     }
     
     libdirs {
         "Engine/",
+
+        "../../dependencies/glfw/",
     }
 
     links { 
-        "Core",    
+        "Core",
+        "glfw3"
+    
      }
 
     defines { }

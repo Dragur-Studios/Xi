@@ -21,6 +21,12 @@
     <ClInclude Include="src\Architecture\game.h">
       <Filter>Architecture</Filter>
     </ClInclude>
+    <ClInclude Include="src\Architecture\project.h">
+      <Filter>Architecture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Architecture\window.h">
+      <Filter>Architecture</Filter>
+    </ClInclude>
     <ClInclude Include="src\Debug\debug.h">
       <Filter>Debug</Filter>
     </ClInclude>
@@ -35,14 +41,18 @@
     </ClInclude>
     <ClInclude Include="src\defs.h" />
     <ClInclude Include="src\pch.h" />
-    <ClInclude Include="src\Architecture\window.h" />
-    <ClInclude Include="src\Architecture\project.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Architecture\application.cpp">
       <Filter>Architecture</Filter>
     </ClCompile>
     <ClCompile Include="src\Architecture\game.cpp">
+      <Filter>Architecture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Architecture\project.cpp">
+      <Filter>Architecture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Architecture\window.cpp">
       <Filter>Architecture</Filter>
     </ClCompile>
     <ClCompile Include="src\Debug\debug.cpp">
@@ -54,7 +64,5 @@
     <ClCompile Include="src\Project Generation\generate.cpp">
       <Filter>Project Generation</Filter>
     </ClCompile>
-    <ClCompile Include="src\Architecture\window.cpp" />
-    <ClCompile Include="src\Architecture\project.cpp" />
   </ItemGroup>
 </Project>

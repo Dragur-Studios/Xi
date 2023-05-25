@@ -13,7 +13,7 @@ struct ProjectGeneratorLocationInfo {
 
 class ProjectGenerator {
 public:
-	static class XiProject* GenerateProject(ProjectGeneratorLocationInfo* plocationInfo);
+	static struct XiProject* GenerateProject(ProjectGeneratorLocationInfo* plocationInfo);
 
 protected:
 	static void SetGenerationLocation(ProjectGeneratorLocationInfo* plocationInfo);
@@ -28,7 +28,7 @@ protected:
 	static void BuildVisualStudioSolution();
 
 	static void CreateSourceFiles();
-	static void BuildVisualStudioProject(const std::string& filepath);
+	static void BuildVisualStudioProject(XiProject* pprojectData);
 
 
 private:
