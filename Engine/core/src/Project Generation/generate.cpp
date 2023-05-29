@@ -11,18 +11,6 @@ const std::string ProjectGenerator::default_drive = "C:\\";
 const std::string ProjectGenerator::default_directory = "Xi\\Projects\\";
 const std::string ProjectGenerator::default_projectName = "New Project";
 
-std::string ProjectGenerator::projectName = ProjectGenerator::default_projectName;
-std::string ProjectGenerator::drive = ProjectGenerator::default_drive;
-std::string ProjectGenerator::directory = ProjectGenerator::default_directory;
-
-std::filesystem::path SetWorkingDirectory(const std::string& filepath) {
-    std::filesystem::path lastWD(std::filesystem::current_path());
-    std::filesystem::path tempProjectPath(filepath);
-    std::filesystem::current_path(tempProjectPath);
-    LOG_INFO(std::filesystem::current_path().string());
-    return lastWD;
-}
-
 std::string toPascalCase(const std::string& str)
 {
     std::string result;
@@ -52,51 +40,74 @@ std::string toPascalCase(const std::string& str)
     return result;
 }
 
-XiProject* ProjectGenerator::GenerateProject(ProjectGeneratorLocationInfo* plocationInfo)
+void ProjectGenerator::GenerateProject(ProjectGeneratorLocationInfo* plocationInfo)
 {
+    XiProject* workspace = CreateXiWorkspace(plocationInfo);
 
-    SetGenerationLocation(plocationInfo);
-    InitilizeProjectFileStructure();
-    CreateControlFile();
-    CreateProjectFile();
-    CreateVisualStudioBuildFile();
-    BuildVisualStudioSolution();
-    CreateSourceFiles();
+    //// GAME DLL 
+    auto dll_createInfo = *plocationInfo;
+    dll_createInfo.Type = XiProjectType::DLL;    
+    XiProject* dll = CreateXiProject(&dll_createInfo);
 
-    XiProject* project = new XiProject();
+    // EXECUTABLE
+    auto exe_createInfo = *plocationInfo;
+    exe_createInfo.Type = XiProjectType::EXE;
+    exe_createInfo.ProjectName = "Xi";
+    XiProject* exe = CreateXiProject(&exe_createInfo, &dll, 1);
+
+
+    CreateLUAWorkspaceFile(workspace);
+    BuildVisualStudioSolution(workspace);
     
-    project->drive = plocationInfo->Drive;
-    project->name = plocationInfo->ProjectName;
-    project->filepath = plocationInfo->Filepath;
-
-    BuildVisualStudioProject(project);
-    
-    return project;
 }
 
-void ProjectGenerator::SetGenerationLocation(ProjectGeneratorLocationInfo* plocationInfo)
+XiProject* ProjectGenerator::CreateXiProject(ProjectGeneratorLocationInfo* plocationInfo, XiProject** links, unsigned linkCount)
 {
     LOG_INFO("Updating Project Generation Loction");
-    
-    LOG_INFO("{")
-    drive = plocationInfo->Drive;
-    LOG_INFO("\tDrive:\t" + drive);
-    directory = plocationInfo->Filepath;
-    LOG_INFO("\tDirectory:\t" + directory);
-    projectName = toPascalCase(plocationInfo->ProjectName);
-    LOG_INFO("\tProjectName:\t" + projectName);
-    LOG_INFO("}")
+
+    XiProject* proj = new XiProject();
+    proj->drive = plocationInfo->Drive;
+    proj->name = plocationInfo->ProjectName;
+    proj->workspace = plocationInfo->WorkspaceDirectory;
+    proj->filepath = plocationInfo->Filepath;
+    proj->type = plocationInfo->Type;
+
+    InitilizeProjectFileStructure(proj);
+    CreateLUAProjectFile(proj, links, linkCount);
+    CreateSourceFiles(proj, links, linkCount);
+
+
+    return proj;
+
 }
 
-void ProjectGenerator::InitilizeProjectFileStructure()
+XiProject* ProjectGenerator::CreateXiWorkspace(ProjectGeneratorLocationInfo* plocationInfo)
 {
-    std::string root = drive + directory + projectName + "\\";
+    LOG_INFO("Updating Project Generation Loction");
 
-    LOG_INFO("Initilizing Project at " + root)
+    XiProject* proj = new XiProject();
+    proj->drive =plocationInfo->Drive;
+    proj->name = plocationInfo->ProjectName;
+    proj->workspace = plocationInfo->WorkspaceDirectory;
+    proj->filepath = plocationInfo->Filepath;
+    proj->type = plocationInfo->Type;
+
+
+    InitilizeWorkspaceFileStructure(proj);
+    CreateVisualStudioBuildFile(proj);
+
+    return proj;
+
+}
+
+void ProjectGenerator::InitilizeWorkspaceFileStructure(XiProject* pProj)
+{
+    std::string root = workspace_root(pProj);
+
+    LOG_INFO("Initilizing Workspace at " + root)
 
     std::map<std::string, bool> directories;
     directories.emplace(root, false);
-    directories.emplace(root + "Source\\", false);
     directories.emplace(root + "Build\\", false);
     directories.emplace(root + "_\\", true);
 
@@ -106,68 +117,164 @@ void ProjectGenerator::InitilizeProjectFileStructure()
     }
 
     LOG_SUCCESS("Initilize Project File Structure Success.");
+
 }
 
-void ProjectGenerator::CreateControlFile()
+void ProjectGenerator::InitilizeProjectFileStructure(XiProject* pProj)
 {
-    std::string root = drive + directory + projectName + "\\";
+    std::string root = project_root(pProj);
 
+    LOG_INFO("Initilizing Project at " + root)
+
+    std::map<std::string, bool> directories;
+    directories.emplace(root, false);
+   // directories.emplace(root + "Source\\", false);
+
+    for (const auto kvp : directories)
+    {
+        CHECK_RESULT(FileSystem::Directory::Create(kvp.first, kvp.second));
+    }
+
+    LOG_SUCCESS("Initilize Project File Structure Success.");
+}
+
+void ProjectGenerator::CreateLUAWorkspaceFile(XiProject* pWorkspace)
+{
+    std::string root = workspace_root(pWorkspace);
+
+    LOG_INFO("LUA Workspace File Creation Started.");
+    std::string workspaceTemplateText;
+
+    CHECK_RESULT(FileSystem::File::Read("resources/templates/workspace_template.txt", workspaceTemplateText));
+
+    CHECK_RESULT(FileSystem::FileUtils::FindAndReplace(workspaceTemplateText, token_workspace, "\"" + pWorkspace->name + "\""));
+    CHECK_RESULT(FileSystem::FileUtils::FindAndReplace(workspaceTemplateText, "__NAME__", "\"" + pWorkspace->name + "\""));
+ 
+    CHECK_RESULT(FileSystem::File::Create(root, "premake5.lua"));
+
+    FileSystem::Directory::Push(root);
+
+    CHECK_RESULT(FileSystem::File::Update("premake5.lua", workspaceTemplateText));
+
+    LOG_INFO("LUA Workspace FileCreation Completed Successfully.");
+
+    FileSystem::Directory::Pop();
+
+}
+
+void ProjectGenerator::CreateLUAProjectFile(XiProject* pProj, XiProject** links, unsigned linkCount)
+{
+    std::string root = project_root(pProj);
     LOG_INFO("Control File Creation Started.");
     std::string controlTemplateTxt;
 
-    CHECK_RESULT(FileSystem::File::Read("resources/templates/project_control_file.txt", controlTemplateTxt));
+    CHECK_RESULT(FileSystem::File::Read("resources/templates/project_template.txt", controlTemplateTxt));
 
-    CHECK_RESULT(FileSystem::FileUtils::FindAndReplace(controlTemplateTxt, token_workspace, "\"" + projectName + "\""));
-    CHECK_RESULT(FileSystem::FileUtils::FindAndReplace(controlTemplateTxt, token_project, "\"" + projectName + "\""));
+    std::string temp = "Z:/Dev/Xi/";
+
+    std::string core_inc = temp + "Engine/Core/src/";
+    std::string libDirs_core = temp + "Build/Engine/";
+    std::string links_core = "\"Core\"";
+
+    std::string includes =  "\"" + core_inc + "\"," ;
+    for (size_t i = 0; i < linkCount; i++)
+    {
+        includes += "\"../" + links[i]->name + "/src" + "\",";
+    }
+
+
+
+
+    CHECK_RESULT(FileSystem::FileUtils::FindAndReplace(controlTemplateTxt, "__Includes__", includes));
+    
+    std::string libDirs = "\"" + libDirs_core + "\", ";
+    libDirs += "\"../Build/\",";
+
+    CHECK_RESULT(FileSystem::FileUtils::FindAndReplace(controlTemplateTxt, "__LibDirs__", libDirs));
+
+   
+    std::string linksStr = links_core + ",";
+    for (size_t i = 0; i < linkCount; i++)
+    {
+        linksStr += "\"" + links[i]->name + "\",";
+    }
+
+    CHECK_RESULT(FileSystem::FileUtils::FindAndReplace(controlTemplateTxt, "__Links__", linksStr));
+
+    CHECK_RESULT(FileSystem::FileUtils::FindAndReplace(controlTemplateTxt, token_project, "\"" + pProj->name + "\""));
+
+    
+    switch (pProj->type)
+    {
+    case XiProjectType::EXE: {
+        #ifndef _DEBUG
+        std::string exe = "WindowedApp";
+        #else
+        std::string exe = "ConsoleApp";
+        #endif
+        CHECK_RESULT(FileSystem::FileUtils::FindAndReplace(controlTemplateTxt, "__TYPE__", exe));
+
+    }
+        break;
+    case XiProjectType::DLL:
+        CHECK_RESULT(FileSystem::FileUtils::FindAndReplace(controlTemplateTxt, "__TYPE__", "SharedLib"));
+        break;
+    case XiProjectType::LIB:
+        CHECK_RESULT(FileSystem::FileUtils::FindAndReplace(controlTemplateTxt, "__TYPE__", "StaticLib"));
+        break;
+
+    }
+
+    
     
     CHECK_RESULT(FileSystem::File::Create(root, "premake5.lua"));
     
-    std::filesystem::path lastWD(SetWorkingDirectory(root));
+    FileSystem::Directory::Push(root);
 
     CHECK_RESULT(FileSystem::File::Update("premake5.lua", controlTemplateTxt));
 
     LOG_INFO("Control File Creation Completed Successfully.");
 
-    std::filesystem::current_path(lastWD);
+    FileSystem::Directory::Pop();
 
 }
 
-void ProjectGenerator::CreateProjectFile() {
+void ProjectGenerator::CreateProjectFile(XiProject* pProj) {
     LOG_INFO("Project File Creation Started.");
     
-    std::string root = drive + directory + projectName + "\\";
+    std::string root = workspace_root(pProj);
 
     std::string extension = ".xiProject";
 
-    CHECK_RESULT(FileSystem::File::Create(root, projectName + extension));
+    CHECK_RESULT(FileSystem::File::Create(root, pProj->name + extension));
     
     std::stringstream ss;
     
-    ss << projectName << "\n"
+    ss << pProj->name << "\n"
         << root << "\n" <<
         "\0";
 
-    CHECK_RESULT(FileSystem::File::Update(root + projectName + extension, ss.str()));
+    CHECK_RESULT(FileSystem::File::Update(root + pProj->name + extension, ss.str()));
 
     LOG_INFO("Project File Created Succssfully.");
 }
 
-void ProjectGenerator::CreateVisualStudioBuildFile()
+void ProjectGenerator::CreateVisualStudioBuildFile(XiProject* pProj)
 {
     LOG_INFO("Porject Build File Creation Started.");
+    
+    std::string root = workspace_root(pProj);
 
-    std::string root = drive + directory + projectName + "\\";
-    std::filesystem::path lastWD(SetWorkingDirectory(root));
-
+    FileSystem::Directory::Push(root);
 
     CHECK_RESULT(FileSystem::File::Create("_\\", "generate_project.bat"));
 
     std::string buildCommands = "";
     buildCommands += "call _\\premake5\\premake5.exe vs2022\n";
-    //buildCommands += "call xcopy /E /I \"assets\\\" \"tools / editor / assets\\\" /Y\n";
     
     CHECK_RESULT(FileSystem::File::Update(root + "_\\" + "generate_project.bat", buildCommands));
-    std::filesystem::current_path(lastWD);
+
+    FileSystem::Directory::Pop();
 
     CHECK_RESULT(FileSystem::FileUtils::Copy("resources\\executables\\premake5", root + "_\\premake5"));
 
@@ -177,12 +284,14 @@ void ProjectGenerator::CreateVisualStudioBuildFile()
 
 }
 
-void ProjectGenerator::BuildVisualStudioSolution()
+void ProjectGenerator::BuildVisualStudioSolution(XiProject* pProj)
 {
     LOG_INFO("Visual Studio Solution Generation Started.");
 
-    std::string root = drive + directory + projectName + "\\";
-    std::filesystem::path lastWD(SetWorkingDirectory(root));
+    std::string root = workspace_root(pProj);
+
+    //std::filesystem::path lastWD(SetWorkingDirectory(root));
+    FileSystem::Directory::Push(root);
 
 
     std::string buildCommand = "call \"_\\generate_project.bat\" 0";
@@ -197,69 +306,183 @@ void ProjectGenerator::BuildVisualStudioSolution()
         LOG_ERROR("Faild to build Visual Studio Solution.");
     }
 
-    std::filesystem::current_path(lastWD);
+    FileSystem::Directory::Pop();
+
 }
 
-void ProjectGenerator::BuildVisualStudioProject(XiProject* pProjectData)
-{
-    std::string root = pProjectData->drive + pProjectData->filepath + pProjectData->name + "\\";
-    std::string solution = pProjectData->name + ".sln";
+void ProjectGenerator::InitProjectWithCompiler(XiProject* pProj) {
+  
+    std::string root = workspace_root(pProj);
 
-    std::string buildpath = "C:\\\"Program Files\"\\\"Microsoft Visual Studio\"\\2022\\Enterprise\\VC\\Auxiliary\\Build\\vcvars64.bat";
-    LOG_INFO("Attepting to Run: "+ buildpath + "\n" + root + solution);
-    
     // Construct the build command
-    
-    
-    
-    std::string command = "call cl"+ buildpath + " \"" + root  + solution + "\"";
+    std::string template_build_file;
 
-    // Run the build command using the system function
-    
-    int result = std::system(command.c_str());
+    switch (pProj->type)
+    {
+    case XiProjectType::DLL:
+        CHECK_RESULT(FileSystem::File::Read("resources/executables/compile_dll.bat", template_build_file)); //<---- TODO!! this should be a pointer to this ref 
+        CHECK_RESULT(FileSystem::FileUtils::FindAndReplace(template_build_file, "__NAME__", pProj->name, true));
+        break;
+    case XiProjectType::EXE:
+        CHECK_RESULT(FileSystem::File::Read("resources/executables/compile_exe.bat", template_build_file)); //<---- TODO!! this should be a pointer to this ref 
+        CHECK_RESULT(FileSystem::FileUtils::FindAndReplace(template_build_file, "__NAME__", pProj->name, true));
+        break;
+    case XiProjectType::LIB:
+        CHECK_RESULT(FileSystem::File::Read("resources/executables/compile_lib.bat", template_build_file)); //<---- TODO!! this should be a pointer to this ref 
+        CHECK_RESULT(FileSystem::FileUtils::FindAndReplace(template_build_file, "__NAME__", pProj->name, true));
+        break;
+    }
 
-    // Check the result of the system command
-    if (result == 0)
+    FileSystem::Directory::Push(root);
+
+    switch (pProj->type)
     {
-        LOG_SUCCESS("\tTarget Visual Studio Project Build Successful");
+    case XiProjectType::EXE:
+      
+        CHECK_RESULT(FileSystem::File::Create("./_/", "compile_exe.bat"));
+        CHECK_RESULT(FileSystem::File::Update("./_/compile_exe.bat", template_build_file));
+
+        break;
+    case XiProjectType::DLL:
+
+        CHECK_RESULT(FileSystem::File::Create("./_/", "compile_dll.bat"));
+        CHECK_RESULT(FileSystem::File::Update("./_/compile_dll.bat", template_build_file));
+
+        break;
+    case XiProjectType::LIB:
+
+        CHECK_RESULT(FileSystem::File::Create("./_/", "compile_lib.bat"));
+        CHECK_RESULT(FileSystem::File::Update("./_/compile_lib.bat", template_build_file));
+
+        break;
     }
-    else
-    {
-        LOG_ERROR("\tTarget Visual Studio Project Build Failed");
-    }
+    
+    FileSystem::Directory::Pop();
+
 }
 
-
-void ProjectGenerator::CreateSourceFiles()
+void ProjectGenerator::CompileProject(XiProject* pProj)
 {
-    LOG_INFO("Adding Source Files");
+    LOG_INFO("Creating Compilation Module");
 
+    std::string root = workspace_root(pProj);
+    // PRE COMPILE 
+    FileSystem::Directory::Push(root);
+
+    int result = 0;
+    switch (pProj->type)
+    {
+    case XiProjectType::EXE:
+        result = std::system(".\\_\\compile_exe.bat");
+        break;
+    case XiProjectType::DLL:
+        result = std::system(".\\_\\compile_dll.bat");
+        break;
+    case XiProjectType::LIB:
+        result = std::system(".\\_\\compile_lib.bat");
+        break;
+    }
+
+    if (result != 0) {
+        LOG_ERROR("Project Could Not Be compiled!");
+        return;
+    }
+
+    FileSystem::Directory::Pop();
+
+    LOG_SUCCESS("Project Compiled Succses");
+}
+
+void ProjectGenerator::InitExeProjectFiles(XiProject* pProj, struct XiProject** links, unsigned linkCount) {
+    std::string main_file_cpp;
+
+    CHECK_RESULT(FileSystem::File::Read("resources/templates/main_cpp.txt", main_file_cpp));
+
+    CHECK_RESULT(FileSystem::FileUtils::FindAndReplace(main_file_cpp, "__name__", links[0]->name, true));
+
+    std::string root = project_root(pProj);
+
+    FileSystem::Directory::Push(root);
+
+    CHECK_RESULT(FileSystem::File::Create("src\\",  "main.cpp"));
+    CHECK_RESULT(FileSystem::File::Update("src\\main.cpp", main_file_cpp));
+
+    FileSystem::Directory::Pop();
+}
+
+void ProjectGenerator::InitDllProjectFiles(XiProject* pProj, struct XiProject** links, unsigned linkCount) {
     std::string template_game_file_h;
     std::string template_game_file_cpp;
 
-    CHECK_RESULT(FileSystem::File::Read("resources/templates/game_file_h.txt", template_game_file_h));
-    CHECK_RESULT(FileSystem::FileUtils::FindAndReplace(template_game_file_h, "__game_name__", projectName, true));
-    
-    CHECK_RESULT(FileSystem::File::Read("resources/templates/game_file_cpp.txt", template_game_file_cpp));
-    CHECK_RESULT(FileSystem::FileUtils::FindAndReplace(template_game_file_cpp, "__game_name__", projectName, true));
-    
-    std::string nameCPP = projectName + ".cpp";
-    std::string nameH = projectName + ".h";
+    CHECK_RESULT(FileSystem::File::Read("resources/templates/game_h_template.txt", template_game_file_h));
+    CHECK_RESULT(FileSystem::FileUtils::FindAndReplace(template_game_file_h, "__game_name__", pProj->name, true));
 
-    std::string root = drive + directory + projectName + "\\";
-    std::filesystem::path lastWD(SetWorkingDirectory(root));
+    CHECK_RESULT(FileSystem::File::Read("resources/templates/game_cpp_template.txt", template_game_file_cpp));
+    CHECK_RESULT(FileSystem::FileUtils::FindAndReplace(template_game_file_cpp, "__game_name__", pProj->name, true));
 
+    std::string nameCPP = pProj->name + ".cpp";
+    std::string nameH = pProj->name + ".h";
 
-    CHECK_RESULT(FileSystem::File::Create("Source\\src\\", nameCPP));
-    CHECK_RESULT(FileSystem::File::Update("Source\\src\\" + nameCPP, template_game_file_cpp));
+    std::string root = project_root(pProj);
 
-    CHECK_RESULT(FileSystem::File::Create("Source\\src\\",  nameH));
-    CHECK_RESULT(FileSystem::File::Update("Source\\src\\" + nameH, template_game_file_h));
+    FileSystem::Directory::Push(root);
 
+    CHECK_RESULT(FileSystem::File::Create("src\\", nameCPP));
+    CHECK_RESULT(FileSystem::File::Update("src\\" + nameCPP, template_game_file_cpp));
 
-    std::filesystem::current_path(lastWD);
+    CHECK_RESULT(FileSystem::File::Create("src\\", nameH));
+    CHECK_RESULT(FileSystem::File::Update("src\\" + nameH, template_game_file_h));
 
-    LOG_SUCCESS("Hello Source Files Success");
+    FileSystem::Directory::Pop();
+
+}
+
+void ProjectGenerator::InitLibProjectFiles(XiProject* pProj, struct XiProject** links, unsigned linkCount) {
+    std::string template_game_file_h;
+    std::string template_game_file_cpp;
+
+    CHECK_RESULT(FileSystem::File::Read("resources/templates/game_h_template.txt", template_game_file_h));
+    CHECK_RESULT(FileSystem::FileUtils::FindAndReplace(template_game_file_h, "__game_name__", pProj->name, true));
+
+    CHECK_RESULT(FileSystem::File::Read("resources/templates/game_cpp_template.txt", template_game_file_cpp));
+    CHECK_RESULT(FileSystem::FileUtils::FindAndReplace(template_game_file_cpp, "__game_name__", pProj->name, true));
+
+    std::string nameCPP = pProj->name + ".cpp";
+    std::string nameH = pProj->name + ".h";
+
+    std::string root = project_root(pProj);
+
+    FileSystem::Directory::Push(root);
+
+    CHECK_RESULT(FileSystem::File::Create("src\\", nameCPP));
+    CHECK_RESULT(FileSystem::File::Update("src\\" + nameCPP, template_game_file_cpp));
+
+    CHECK_RESULT(FileSystem::File::Create("src\\", nameH));
+    CHECK_RESULT(FileSystem::File::Update("src\\" + nameH, template_game_file_h));
+
+    FileSystem::Directory::Pop();
+}
+
+void ProjectGenerator::CreateSourceFiles(XiProject* pProj, struct XiProject** links, unsigned linkCount)
+{
+    LOG_INFO("Adding Source Files");
+
+    switch (pProj->type)
+    {
+    case XiProjectType::EXE:
+        InitExeProjectFiles(pProj, links, linkCount);
+        break;
+
+    case XiProjectType::DLL:
+        InitDllProjectFiles(pProj, links, linkCount);
+        break;
+
+    case XiProjectType::LIB:
+        InitLibProjectFiles(pProj, links, linkCount);
+        break;
+    }
+
+    LOG_SUCCESS("Source Files Added Success");
 
 }
 

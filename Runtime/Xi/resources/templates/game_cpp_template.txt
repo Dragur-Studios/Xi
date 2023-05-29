@@ -3,9 +3,11 @@
 //
 
 #include "__game_name__.h"
+#include <iostream>
 
-__game_name__::__game_name__()
+__game_name__::__game_name__() : iGame()
 {
+	std::cout << "GAME://	Game Loaded Successfully! " << name << std::endl;
 }
 
 __game_name__::~__game_name__()

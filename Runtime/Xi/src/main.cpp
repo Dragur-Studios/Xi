@@ -28,6 +28,8 @@ int main() {
 	// Enable CRT memory leak detection
 	ENABLE_CRT_MEMORY_LEAK_DETECTION();
 
+	// ATTACH THE PROJECT LAUNCHER
+
 	std::string project_name;
 
 	std::cout << "enter project name" << std::endl;
@@ -36,18 +38,11 @@ int main() {
 	ProjectGeneratorLocationInfo createInfo{ };
 	createInfo.Drive = "D:\\";
 	createInfo.Filepath = "Xi\\Projects\\";
+	createInfo.WorkspaceDirectory = project_name + "\\";
 	createInfo.ProjectName = project_name;
 
-	XiProject* project = ProjectGenerator::GenerateProject(&createInfo);
+	ProjectGenerator::GenerateProject(&createInfo);
 
-#if EDITOR
-	ATTACH_EDITOR(project);
-#elif PLAYER
-	ATTACH_PLAYER(gameName);
-#else
-
-#endif
-	
 	return 0;
 }
 

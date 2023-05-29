@@ -1,24 +1,16 @@
-workspace ws__________
-    architecture "x64"
-
-    configurations { "Debug",  "Release", "Distribution" }
-
-    flags { "MultiProcessorCompile" }
-    
-    location "."
 
 project pj__________
-    kind "sharedLib"
+    kind "__TYPE__"
 
     language "c++"
     cppdialect "c++latest"
     
-    location "./Source"   
+    location "."   
 
     configurations { "Debug",  "Release", "Distribution" }
 
-    targetdir ("./Build/%{cfg.buildCfg}/")
-    objdir ("./Build/%{cfg.buildCfg}/")
+    targetdir ("../Build/%{cfg.buildCfg}/")
+    objdir ("../Build/%{cfg.buildCfg}/")
 
     files {
         "src/**.h",
@@ -29,16 +21,17 @@ project pj__________
     includedirs {
         "src/",
 
-        "../../engine/Core/src",
+        __Includes__
+       
 
     }
     
     libdirs {
-        "Engine/",
+        __LibDirs__
     }
 
     links { 
-        "Core",    
+        __Links__    
      }
 
     defines { }

@@ -1,0 +1,12 @@
+//
+// generated with xi project generator v0.1
+//
+
+#include "Project Generation/attach.h"
+#include "__name__.cpp"
+
+int main()
+{
+	ATTACH_EDITOR(CreateGame());
+	return 0;
+}

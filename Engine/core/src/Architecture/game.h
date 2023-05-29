@@ -5,25 +5,23 @@
 class iGame
 {
 public:
-	iGame(const char* name, const char* directory) : name{ name }, directory{ directory } {};
+	iGame() {};
 	virtual ~iGame(){}
 
 	virtual void OnInitilize() =0;
 	virtual void OnTick() =0;
 	virtual void OnShutdown() = 0;
 
+	_declspec(dllexport) void SetName(const std::string& name) {
+		this->name = name;
+	}
 
-	const std::string& GetName() const {
+	_declspec(dllexport) const std::string& GetName() const {
 		return name;
 	}
-	const std::string& GetDirectory() const {
-		return directory;
-	}
-	
 
 	std::string name;
-	std::string directory;
-
+	
 };
 
 

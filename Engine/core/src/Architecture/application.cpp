@@ -18,7 +18,11 @@ iGameApplication::~iGameApplication()
 {
 }
 
-void iGameApplication::Load(iGame*game)
+void iGameApplication::Load(iGame* game)
 {
+	LOG_INFO("Game DLL Load Started!");
+
 	this->game = game;
+
+	LOG_SUCCESS("Game Loaded Successfully!");
 }

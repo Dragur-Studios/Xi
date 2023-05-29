@@ -13,6 +13,12 @@ Editor::~Editor()
 
 void Editor::OnInitilize()
 {
+	if (game == nullptr)
+	{
+		LOG_ERROR("Game is Null");
+		return;
+	}
+
 	window = new Window(game->GetName().c_str());
 }
 

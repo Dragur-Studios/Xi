@@ -2,6 +2,7 @@
 #include <filesystem>
 
 
+std::filesystem::path FileSystem::Directory::root;
 
 bool FileSystem::File::Create(const std::string& destination, const std::string& name)
 {
@@ -200,5 +201,23 @@ bool FileSystem::Directory::Delete(const std::string& directoryPath)
         return false;
     }
 
+}
+
+std::filesystem::path FileSystem::Directory::SetWorkingDirectory(const std::string& filepath) {
+    std::filesystem::path lastWD(std::filesystem::current_path());
+    std::filesystem::path tempProjectPath(filepath);
+    std::filesystem::current_path(tempProjectPath);
+    LOG_INFO(std::filesystem::current_path().string());
+    return lastWD;
+}
+
+void FileSystem::Directory::Push(const std::string& directoryPath)
+{
+    root = SetWorkingDirectory(directoryPath);
+}
+
+void FileSystem::Directory::Pop()
+{
+    std::filesystem::current_path(root);
 }
 

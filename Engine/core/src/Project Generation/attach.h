@@ -7,7 +7,7 @@
 
 /// DLL
 
-#define ATTACH_EDITOR(project) HMODULE editorDLL = LoadLibraryA("Runtime/Editor.dll");\
+#define ATTACH_EDITOR(project) HMODULE editorDLL = LoadLibraryA("Z:/Dev/Xi/Build/Runtime/Editor.dll");\
 if (editorDLL == nullptr)\
 {\
 Debug::Log("Editor DLL has not been loaded!"); \
@@ -33,7 +33,7 @@ editor->OnShutdown();\
 
 
 
-#define ATTACH_PLAYER(gameName) HMODULE playerDLL = LoadLibraryA("Runtime/Player.dll");\
+#define ATTACH_PLAYER(project) HMODULE playerDLL = LoadLibraryA("Runtime/Player.dll");\
 if (playerDLL == nullptr)\
 {\
 Debug::Log("Player DLL has not been loaded!"); \
@@ -52,30 +52,13 @@ Debug::Log("Player Creation Failed!");\
 return 1;\
 }\
 Debug::Log("Player Created Successfully.");\
-ATTACH_GAME(player, gameName)\
+ATTACH_GAME(player, project)\
 player->OnInitilize();\
 player->OnTick();\
 player->OnShutdown();\
 
 
-#define ATTACH_GAME(iapp, project) HMODULE gameDLL = LoadLibraryA((project->name + ".dll").c_str()); \
-if(gameDLL == nullptr){ \
-Debug::Log("Game Could Not Be Loaded"); \
-return -1;\
-}\
-XiGameFunc createGamefn = (XiGameFunc)GetProcAddress(gameDLL, "CreateGame");\
-if(createGamefn == nullptr)\
-{\
-Debug::Log("Create Game Function Not Found"); \
-return -2;\
-}\
-iGame* game = createGamefn();\
-if(game == nullptr)\
-{\
-Debug::Log("Game Creation Failed!"); \
-return -2;\
-}\
-Debug::Log("Game Creation Succeess!"); \
-iapp->Load(game);\
+#define ATTACH_GAME(iapp, project) \
+iapp->Load(project);\
 
 

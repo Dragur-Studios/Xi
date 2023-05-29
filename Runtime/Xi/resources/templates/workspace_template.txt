@@ -1,0 +1,12 @@
+workspace ws__________
+    architecture "x64"
+
+    configurations { "Debug",  "Release", "Distribution" }
+
+    flags { "MultiProcessorCompile" }
+    
+    location "."
+
+
+    include __NAME__
+    include "xi/"

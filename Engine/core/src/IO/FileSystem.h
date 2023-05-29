@@ -25,6 +25,16 @@ public:
 		static bool Update(const std::string& targetDirectory, const std::string& replacementDirectory);	
 		static bool Read(const std::string& directoryPath, std::vector<std::string>& subDirectories);
 		static bool Delete(const std::string& directoryPath);
+	
+		static std::filesystem::path SetWorkingDirectory(const std::string& filepath);
+		
+		static void Push(const std::string& directoryPath);
+		static void Pop();
+
+		static std::filesystem::path root;
+		
 	};
+
+
 };
 
