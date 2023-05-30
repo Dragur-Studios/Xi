@@ -26,8 +26,7 @@ Debug::Log("Editor Creation Failed!");\
 return 1;\
 }\
 Debug::Log("Editor Created Successfully.");\
-ATTACH_GAME(editor, project); \
-editor->OnInitilize();\
+editor->OnInitilize(project);\
 editor->OnTick();\
 editor->OnShutdown();\
 
@@ -52,13 +51,10 @@ Debug::Log("Player Creation Failed!");\
 return 1;\
 }\
 Debug::Log("Player Created Successfully.");\
-ATTACH_GAME(player, project)\
-player->OnInitilize();\
+player->OnInitilize(project);\
 player->OnTick();\
 player->OnShutdown();\
 
 
-#define ATTACH_GAME(iapp, project) \
-iapp->Load(project);\
 
 

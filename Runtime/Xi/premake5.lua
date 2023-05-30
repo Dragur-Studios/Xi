@@ -32,7 +32,9 @@ project "Xi"
         "Core",    
      }
 
-    defines { }
+    defines {
+        "ENGINE"
+    }
     
 
     filter "system:windows"

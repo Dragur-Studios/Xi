@@ -11,9 +11,9 @@ public:
 	iApplication();
 	virtual ~iApplication();
 
-	virtual void OnInitilize() = 0;
+	virtual void OnInitilize() {};
 	virtual void OnTick() = 0;
-	virtual void OnShutdown() = 0;
+	virtual void OnShutdown() {};
 };
 
 class iGameApplication : public iApplication
@@ -22,10 +22,10 @@ public:
 	iGameApplication();
 	virtual ~iGameApplication();
 
-	void Load(class iGame* game);
+	virtual void OnInitilize(class iGame* igame) = 0;
 
 	class iGame* game;
-
+	class Window* window;
 };
 
 typedef iApplication* (*XiApplicationFunc)();

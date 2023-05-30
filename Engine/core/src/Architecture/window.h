@@ -12,6 +12,8 @@ public:
 	bool ProcessEvents();
 
 	struct GLFWwindow* win;
+	
+	static void on_resize(struct GLFWwindow* window, int width, int height);
 
 private:
 	std::string caption;

@@ -7,6 +7,9 @@
     <Filter Include="Debug">
       <UniqueIdentifier>{0C95060D-78A9-2EBE-412B-D21DADFE2AEF}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Dependencies">
+      <UniqueIdentifier>{6C01343A-5864-C3DE-01EA-FB94ED2B8F61}</UniqueIdentifier>
+    </Filter>
     <Filter Include="IO">
       <UniqueIdentifier>{FD735900-E9FF-870B-52AE-880B3E59880B}</UniqueIdentifier>
     </Filter>
@@ -57,6 +60,30 @@
     </ClCompile>
     <ClCompile Include="src\Debug\debug.cpp">
       <Filter>Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dependencies\glad.c">
+      <Filter>Dependencies</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dependencies\imgui.cpp">
+      <Filter>Dependencies</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dependencies\imgui_demo.cpp">
+      <Filter>Dependencies</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dependencies\imgui_draw.cpp">
+      <Filter>Dependencies</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dependencies\imgui_impl_glfw.cpp">
+      <Filter>Dependencies</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dependencies\imgui_impl_opengl3.cpp">
+      <Filter>Dependencies</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dependencies\imgui_tables.cpp">
+      <Filter>Dependencies</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dependencies\imgui_widgets.cpp">
+      <Filter>Dependencies</Filter>
     </ClCompile>
     <ClCompile Include="src\IO\FileSystem.cpp">
       <Filter>IO</Filter>

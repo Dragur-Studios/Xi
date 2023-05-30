@@ -8,13 +8,11 @@ public:
 	Editor();
 	~Editor();
 
-	virtual void OnInitilize() override;
+	virtual void OnInitilize(class iGame* igame) override;
 
 	virtual void OnTick() override;
 
 	virtual void OnShutdown() override;
-
-	class Window* window;
 
 };
 

@@ -38,7 +38,9 @@ project "core"
         "glfw3"
     }
 
-    defines { }
+    defines { 
+        "ENGINE"
+    }
     
 
     filter "system:windows"
