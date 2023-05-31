@@ -8,6 +8,8 @@
 #include <glad/glad.h>
 #include "GLFW/glfw3.h"
 
+#include "views/Terminal.h"
+
 Editor::Editor()
 {
 	
@@ -34,6 +36,10 @@ void Editor::OnInitilize(iGame* igame)
 		return;
 	}
 	
+
+	this->window->AddView(new Terminal());
+
+
 	// temporary DOES NOT STAY!!
 	game->OnInitilize();
 }

@@ -44,6 +44,7 @@
     </ClInclude>
     <ClInclude Include="src\defs.h" />
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\GUI\view.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Architecture\application.cpp">
@@ -91,5 +92,6 @@
     <ClCompile Include="src\Project Generation\generate.cpp">
       <Filter>Project Generation</Filter>
     </ClCompile>
+    <ClCompile Include="src\GUI\view.cpp" />
   </ItemGroup>
 </Project>

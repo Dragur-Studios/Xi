@@ -11,12 +11,18 @@ public:
 	void SetCaption(const char* caption);
 	bool ProcessEvents();
 
-	struct GLFWwindow* win;
-	
+	void AddView(class View* v);
+	void RemoveView(class View* v);
+
 	static void on_resize(struct GLFWwindow* window, int width, int height);
+
+protected:
+	void SetStyle();
 
 private:
 	std::string caption;
+	std::vector<class View*> views;
+	struct GLFWwindow* win;
 
 };
 
