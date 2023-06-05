@@ -14,6 +14,8 @@
 #include <string>
 #include <sstream>
 
+
+
 void showDockSpace(bool* p_open)
 {
 	static bool opt_fullscreen_persistant = true;
@@ -54,8 +56,7 @@ void showDockSpace(bool* p_open)
 	ImGui::End();
 }
 
-
-Window::Window(const char* caption ) : caption{ caption } {
+Window::Window(const char* caption) : caption{ caption } {
 	
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -65,7 +66,10 @@ Window::Window(const char* caption ) : caption{ caption } {
 	// GLFW NEEDS to be Initilized PER THREAD
 	glfwInit();
 
-	win = glfwCreateWindow(600, 400, this->caption.c_str(), nullptr, nullptr);
+	width = 1920;
+	height = 1080;
+
+	win = glfwCreateWindow(width, height, this->caption.c_str(), nullptr, nullptr);
 	
 	if (win == nullptr) {
 		LOG_ERROR("WINDOW IS NULL!");
@@ -82,7 +86,7 @@ Window::Window(const char* caption ) : caption{ caption } {
 	}
 
 
-	glViewport(0, 0, 600, 400);
+	glViewport(0, 0, width, height);
 
 	IMGUI_CHECKVERSION();
 
@@ -94,25 +98,28 @@ Window::Window(const char* caption ) : caption{ caption } {
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
-
-
 	SetStyle();
 	
-
 	ImGui_ImplGlfw_InitForOpenGL(win, true);
 	if (!ImGui_ImplOpenGL3_Init("#version 450")) {
 		LOG_ERROR("ImGUi Could not Be Initilized!");
 		return;
 	}
 
+	glfwSetWindowUserPointer(win, this);
+
 	glfwSetFramebufferSizeCallback(win, on_resize);
 
+	data.pWindow = win;
+	data.condition = &eventsCV;
 
 }
 
 
 void Window::on_resize(struct GLFWwindow* window, int width, int height) {
-	glViewport(0, 0, width, height);
+
+	auto win = (Window*)glfwGetWindowUserPointer(window);
+	win->Resize(width, height);
 }
 
 void Window::SetStyle()
@@ -154,7 +161,7 @@ void Window::SetStyle()
 		colors[ImGuiCol_Text] = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
 		colors[ImGuiCol_TextDisabled] = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
 		colors[ImGuiCol_WindowBg] = ImVec4(0.1f, 0.1f, 0.1f, 0.94f);
-		colors[ImGuiCol_ChildBg] = ImVec4(0.1f, 0.1f, 0.1f, 0.00f);
+		colors[ImGuiCol_ChildBg] = ImVec4(0.063f, 0.063f, 0.063f, 0.00f);
 		colors[ImGuiCol_PopupBg] = ImVec4(0.08f, 0.08f, 0.08f, 0.94f);
 		colors[ImGuiCol_Border] = ImVec4(0.00f, 0.00f, 0.00f, 0.50f);
 		colors[ImGuiCol_BorderShadow] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
@@ -164,7 +171,7 @@ void Window::SetStyle()
 		colors[ImGuiCol_TitleBg] = ImVec4(0.1f, 0.1f, 0.1f, 1.00f);
 		colors[ImGuiCol_TitleBgActive] = ImVec4(0.1f, 0.1f, 0.1f, 1.00f);
 		colors[ImGuiCol_TitleBgCollapsed] = ImVec4(0.00f, 0.00f, 0.00f, 0.51f);
-		colors[ImGuiCol_MenuBarBg] = ImVec4(0.1f, 0.1f, 0.1f, 1.00f);
+		colors[ImGuiCol_MenuBarBg] = ImVec4(0.063f, 0.063f, 0.063f, 1.00f);
 		colors[ImGuiCol_ScrollbarBg] = ImVec4(0.02f, 0.02f, 0.02f, 0.53f);
 		colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.31f, 0.31f, 0.31f, 1.00f);
 		colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.41f, 0.41f, 0.41f, 1.00f);
@@ -190,7 +197,7 @@ void Window::SetStyle()
 		colors[ImGuiCol_TabUnfocused] = ImVec4(0.1f, 0.1f, 0.1f, 0.97f);
 		colors[ImGuiCol_TabUnfocusedActive] = ImVec4(0.1f, 0.1f, 0.1f, 1.00f);
 		colors[ImGuiCol_DockingPreview] = ImVec4(0.91f, 0.26f, 0.98f, 0.70f);
-		colors[ImGuiCol_DockingEmptyBg] = ImVec4(0.10f, 0.10f, 0.10f, 1.00f);
+		colors[ImGuiCol_DockingEmptyBg] = ImVec4(0.063f, 0.063f, 0.063f, 1.00f);
 		colors[ImGuiCol_PlotLines] = ImVec4(0.61f, 0.61f, 0.61f, 1.00f);
 		colors[ImGuiCol_PlotLinesHovered] = ImVec4(1.00f, 0.43f, 0.35f, 1.00f);
 		colors[ImGuiCol_PlotHistogram] = ImVec4(0.90f, 0.70f, 0.00f, 1.00f);
@@ -234,48 +241,25 @@ bool Window::ProcessEvents() {
 
 	glfwPollEvents();
 
-	// clear the GUI BUFFER
-	glClearColor(0, 0, 0, 0);
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplGlfw_NewFrame();
-	ImGui::NewFrame();
-	
-
-	bool show = true;
-	showDockSpace(&show);
-
-	for (const auto v : views) {
-		v->Draw();
-	}
-	auto style = ImGui::GetStyle();
-	ImGui::ShowStyleEditor(&style);
-
-	ImGui::Render();
-
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-
-	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-	{
-		GLFWwindow* backup_current_context = glfwGetCurrentContext();
-		ImGui::UpdatePlatformWindows();
-		ImGui::RenderPlatformWindowsDefault();
-		glfwMakeContextCurrent(backup_current_context);
-	}
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
 	int size_w, size_h;
 	glfwGetFramebufferSize(win, &size_w, &size_h);
-	glViewport(0, 0, 600, 400);
+	glViewport(0, 0, size_w, size_h);
+
+	RenderThunk(&data);
 
 	glfwSwapBuffers(win);
 
 
+	return true;
+}
 
+void Window::Resize(int width, int height)
+{
+	this->width = width;
+	this->height = height;
+	glViewport(0, 0, width, height);
 
 	
-	return true;
 }
 
 void Window::AddView(View* v)
@@ -292,12 +276,55 @@ void Window::RemoveView(View* v)
 	}
 }
 
+void Window::RenderThunk(WindowThreadData* threadData)
+{
+
+	// clear the GUI BUFFER
+	glClearColor(0, 0, 0, 0);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+
+
+	bool show = true;
+	showDockSpace(&show);
+
+	auto win = (Window*)glfwGetWindowUserPointer(threadData->pWindow);
+	for (const auto v : win->views) {
+		v->Draw();
+	}
+
+	/*auto style = ImGui::GetStyle();
+	ImGui::ShowStyleEditor(&style);*/
+
+	ImGui::Render();
+
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	{
+		GLFWwindow* backup_current_context = glfwGetCurrentContext();
+		ImGui::UpdatePlatformWindows();
+		ImGui::RenderPlatformWindowsDefault();
+		glfwMakeContextCurrent(backup_current_context);
+	}
+	
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	
+	threadData->condition->notify_all();
+
+}
+
 void Window::SetCaption(const char* caption) {
 	this->caption = std::string(caption);
 	glfwSetWindowTitle(win, this->caption.c_str());
 }
 
 Window::~Window() {
+
+	eventThread.join();
 
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();

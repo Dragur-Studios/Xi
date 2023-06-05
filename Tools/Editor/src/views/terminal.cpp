@@ -6,6 +6,8 @@ Terminal::Terminal()
 	: View("Terminal"), stdInterceptor{nullptr}
 {
 	stdInterceptor = new ImGuiStreamInterceptor(std::cout);
+	windowFlags |= ImGuiWindowFlags_::ImGuiWindowFlags_NoScrollbar;
+
 }
 
 Terminal::~Terminal()
@@ -18,6 +20,11 @@ void Terminal::Update()
 		stdInterceptor->ClearLogs();
 	}
 
+	auto region = ImGui::GetWindowContentRegionMax();
+	region.x -= 5;
+	region.y -= 50;
+
+	ImGui::BeginChild("###LOGS", region, true, ImGuiWindowFlags_::ImGuiWindowFlags_AlwaysVerticalScrollbar);
 
 	for (size_t i = 0; i < stdInterceptor->LogCount(); i++)
 	{
@@ -49,6 +56,13 @@ void Terminal::Update()
 	
 		ImGui::Separator();
 
+		ImGui::SetScrollHereY();
 	}
 
+	ImGui::EndChild();
+
+}
+
+void Terminal::HandleContextMenu()
+{
 }

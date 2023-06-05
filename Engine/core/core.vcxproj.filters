@@ -45,6 +45,8 @@
     <ClInclude Include="src\defs.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\GUI\view.h" />
+    <ClInclude Include="src\GUI\graph_view.h" />
+    <ClInclude Include="src\GUI\graph_renderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Architecture\application.cpp">
@@ -93,5 +95,7 @@
       <Filter>Project Generation</Filter>
     </ClCompile>
     <ClCompile Include="src\GUI\view.cpp" />
+    <ClCompile Include="src\GUI\graph_view.cpp" />
+    <ClCompile Include="src\GUI\graph_renderer.cpp" />
   </ItemGroup>
 </Project>

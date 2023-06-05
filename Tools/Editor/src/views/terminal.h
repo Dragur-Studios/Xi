@@ -59,6 +59,8 @@ public:
 	~Terminal();
 
 	virtual void Update() override;
+	virtual void HandleContextMenu() override;
+
 
 private:
 	ImGuiStreamInterceptor* stdInterceptor;

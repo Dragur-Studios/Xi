@@ -15,6 +15,8 @@ public:
 
 protected:
 	virtual void Update() = 0;
+	virtual void Render() {};
+	virtual void HandleContextMenu() = 0;
 
 protected:
 	bool show;

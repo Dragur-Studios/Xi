@@ -16,8 +16,12 @@ void View::Draw()
 {
 	if (show)
 	{
-		if (ImGui::Begin(name.c_str(), &show, (ImGuiWindowFlags)windowFlags)) {
+		if (!ImGui::Begin(name.c_str(), &show, (ImGuiWindowFlags)windowFlags)) {
+			ImGui::End();
+		}
+		else {
 			Update();
+			Render();
 			ImGui::End();
 		}
 	}
