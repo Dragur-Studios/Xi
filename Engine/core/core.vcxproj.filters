@@ -10,6 +10,12 @@
     <Filter Include="Dependencies">
       <UniqueIdentifier>{6C01343A-5864-C3DE-01EA-FB94ED2B8F61}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GUI">
+      <UniqueIdentifier>{2AEC870B-96F5-877C-1F71-9E7C8B79937C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GUI\GraphView">
+      <UniqueIdentifier>{E625F731-52E6-7268-1B21-BCE587A0B744}</UniqueIdentifier>
+    </Filter>
     <Filter Include="IO">
       <UniqueIdentifier>{FD735900-E9FF-870B-52AE-880B3E59880B}</UniqueIdentifier>
     </Filter>
@@ -33,6 +39,18 @@
     <ClInclude Include="src\Debug\debug.h">
       <Filter>Debug</Filter>
     </ClInclude>
+    <ClInclude Include="src\GUI\GraphView\graph_renderer.h">
+      <Filter>GUI\GraphView</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GUI\GraphView\graph_view.h">
+      <Filter>GUI\GraphView</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GUI\GraphView\node.h">
+      <Filter>GUI\GraphView</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GUI\view.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
     <ClInclude Include="src\IO\FileSystem.h">
       <Filter>IO</Filter>
     </ClInclude>
@@ -44,9 +62,6 @@
     </ClInclude>
     <ClInclude Include="src\defs.h" />
     <ClInclude Include="src\pch.h" />
-    <ClInclude Include="src\GUI\view.h" />
-    <ClInclude Include="src\GUI\graph_view.h" />
-    <ClInclude Include="src\GUI\graph_renderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Architecture\application.cpp">
@@ -88,14 +103,26 @@
     <ClCompile Include="src\Dependencies\imgui_widgets.cpp">
       <Filter>Dependencies</Filter>
     </ClCompile>
+    <ClCompile Include="src\Dependencies\imnodes.cpp">
+      <Filter>Dependencies</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUI\GraphView\Node.cpp">
+      <Filter>GUI\GraphView</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUI\GraphView\graph_renderer.cpp">
+      <Filter>GUI\GraphView</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUI\GraphView\graph_view.cpp">
+      <Filter>GUI\GraphView</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUI\view.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
     <ClCompile Include="src\IO\FileSystem.cpp">
       <Filter>IO</Filter>
     </ClCompile>
     <ClCompile Include="src\Project Generation\generate.cpp">
       <Filter>Project Generation</Filter>
     </ClCompile>
-    <ClCompile Include="src\GUI\view.cpp" />
-    <ClCompile Include="src\GUI\graph_view.cpp" />
-    <ClCompile Include="src\GUI\graph_renderer.cpp" />
   </ItemGroup>
 </Project>

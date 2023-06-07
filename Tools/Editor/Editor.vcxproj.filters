@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="views">
+      <UniqueIdentifier>{D39C9110-3FB1-B9C1-0833-5D217406B6F2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\editor.h" />
+    <ClInclude Include="src\views\Inspector.h">
+      <Filter>views</Filter>
+    </ClInclude>
+    <ClInclude Include="src\views\terminal.h">
+      <Filter>views</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\editor.cpp" />
+    <ClCompile Include="src\views\Inspector.cpp">
+      <Filter>views</Filter>
+    </ClCompile>
+    <ClCompile Include="src\views\terminal.cpp">
+      <Filter>views</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

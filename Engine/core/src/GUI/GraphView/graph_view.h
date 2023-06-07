@@ -3,10 +3,7 @@
 #include "pch.h"
 #include "defs.h"
 
-#include "view.h"
-#include "graph_renderer.h"
-
-
+#include "../view.h"
 
 #include "glm/glm.hpp"
 using namespace glm;
@@ -24,14 +21,10 @@ public:
 	virtual void Render() override;
 	virtual void HandleContextMenu() override;
 
-	void AddNode(std::string label, vec2 position, vec2 size);
-	void ConnectNodes(Node* a, Node* b);
-
-protected:
-	void HandleZoom();
 
 private:
-	GraphRenderer renderer;
+	class GraphRenderer* renderer;
+	struct ImNodeEditorContext* nodeEditorCTX;
 
 };
 

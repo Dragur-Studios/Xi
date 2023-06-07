@@ -17,7 +17,7 @@ project "core"
     files {
         "src/**.h",
         "src/**.cpp",
-        "src/**.c"
+        "src/**.c",
     }
 
     includedirs {
@@ -27,6 +27,7 @@ project "core"
         "../../dependencies/glfw/",
         "../../dependencies/glm/",
         "../../dependencies/imgui/",
+        "../../dependencies/imnodes/",
 
     }
     

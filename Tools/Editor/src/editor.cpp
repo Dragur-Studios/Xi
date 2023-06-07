@@ -10,7 +10,8 @@
 
 #include "views/Terminal.h"
 #include "views/Inspector.h"
-#include "GUI/graph_view.h"
+
+#include "gui/graphview/graph_view.h"
 
 Editor::Editor()
 {
