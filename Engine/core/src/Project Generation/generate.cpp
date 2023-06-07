@@ -3,7 +3,7 @@
 #include <filesystem>
 #include "IO/FileSystem.h"
 #include "architecture/project.h"
-
+#include <sstream>
 const std::string ProjectGenerator::token_workspace = "ws__________";
 const std::string ProjectGenerator::token_project = "pj__________";
 
@@ -116,6 +116,34 @@ void ProjectGenerator::InitilizeWorkspaceFileStructure(XiProject* pProj)
         CHECK_RESULT(FileSystem::Directory::Create(kvp.first, kvp.second));
     }
 
+
+    // Load Dynamic Editor Information
+    std::string config;
+
+    FileSystem::File::Read("./config.env", config);
+
+    std::istringstream iss(config);
+
+    std::string drive;
+    {
+        std::string buffer;
+        std::getline(iss, buffer);
+        size_t it = buffer.find_first_of(':') + 1;
+        drive = buffer.substr(it, buffer.find_first_of('\n'));
+        LOG_SUCCESS("ENV DRIVE FOUND: " + drive);
+    }
+
+    std::string filepath;
+    {
+        std::string buffer;
+        std::getline(iss, buffer);
+        size_t it = buffer.find_first_of(':') + 1;
+        filepath = buffer.substr(it, buffer.find_first_of('\n'));
+        LOG_SUCCESS("ENV FILEPATH FOUND: " + filepath);
+    }
+
+    CHECK_RESULT(FileSystem::FileUtils::Copy(drive + filepath + "Build/Runtime/Editor.dll", root + "Build\\Editor.dll"));
+
     LOG_SUCCESS("Initilize Project File Structure Success.");
 
 }
@@ -170,10 +198,33 @@ void ProjectGenerator::CreateLUAProjectFile(XiProject* pProj, XiProject** links,
 
     CHECK_RESULT(FileSystem::File::Read("resources/templates/project_template.txt", controlTemplateTxt));
 
-    std::string temp = "Z:/Dev/Xi/";
+    std::string config;
 
-    std::string core_inc = temp + "Engine/Core/src/";
-    std::string libDirs_core = temp + "Build/Engine/";
+    FileSystem::File::Read("./config.env", config);
+    
+    std::istringstream iss(config);
+
+    std::string drive; 
+    {
+        std::string buffer;
+        std::getline(iss, buffer);
+        size_t it = buffer.find_first_of(':') + 1;
+        drive = buffer.substr(it, buffer.find_first_of('\n'));
+        LOG_SUCCESS("ENV DRIVE FOUND: " + drive);
+    }
+
+    std::string filepath;
+    {
+        std::string buffer;
+        std::getline(iss, buffer);
+        size_t it = buffer.find_first_of(':') + 1;
+        filepath = buffer.substr(it, buffer.find_first_of('\n'));
+        LOG_SUCCESS("ENV FILEPATH FOUND: " + filepath);
+    }
+
+
+    std::string core_inc = drive + filepath + "Engine/Core/src/";
+    std::string libDirs_core = drive + filepath + "Build/Engine/";
     std::string links_core = "\"Core\"";
 
     std::string includes =  "\"" + core_inc + "\"," ;

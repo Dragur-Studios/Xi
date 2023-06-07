@@ -5,9 +5,11 @@
 
 
 #include "graph_renderer.h"
+//#include "graph_renderer_impl.h"
 
 #include "imnodes/imnodes.h"
 
+#include "nodes.h"
 
 GraphView::GraphView(const std::string& name) 
 	: View(name)
@@ -46,11 +48,7 @@ void GraphView::HandleContextMenu()
 			//auto worldPosition = renderer.ScreenToWorldPosition();
 
 			auto mp = ImGui::GetMousePos();
-
-		
-			//AddNode("New Node", to_glm_vec(ImGui::GetMousePos()), vec2(100.0f, 50.0f));
-
-			renderer->AddNode(mp.x, mp.y);
+			renderer->AddNode<TestNode>(mp.x, mp.y);
 		}
 
 		ImGui::EndPopup();

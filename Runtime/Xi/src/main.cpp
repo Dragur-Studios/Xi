@@ -24,6 +24,7 @@
 #define ENABLE_CRT_MEMORY_LEAK_DETECTION() ((void)0)
 #endif
 
+
 int main() {
 	// Enable CRT memory leak detection
 	ENABLE_CRT_MEMORY_LEAK_DETECTION();

@@ -6,7 +6,7 @@ workspace ws__________
     flags { "MultiProcessorCompile" }
     
     location "."
-
+    startproject "xi/"
 
     include __NAME__
     include "xi/"

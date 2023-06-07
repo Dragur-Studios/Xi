@@ -45,7 +45,7 @@
     <ClInclude Include="src\GUI\GraphView\graph_view.h">
       <Filter>GUI\GraphView</Filter>
     </ClInclude>
-    <ClInclude Include="src\GUI\GraphView\node.h">
+    <ClInclude Include="src\GUI\GraphView\Nodes\node.h">
       <Filter>GUI\GraphView</Filter>
     </ClInclude>
     <ClInclude Include="src\GUI\view.h">
@@ -62,6 +62,9 @@
     </ClInclude>
     <ClInclude Include="src\defs.h" />
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\GUI\GraphView\graph_renderer.inl" />
+    <ClInclude Include="src\GUI\GraphView\Nodes\test_node.h" />
+    <ClInclude Include="src\GUI\GraphView\nodes.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Architecture\application.cpp">
@@ -106,7 +109,7 @@
     <ClCompile Include="src\Dependencies\imnodes.cpp">
       <Filter>Dependencies</Filter>
     </ClCompile>
-    <ClCompile Include="src\GUI\GraphView\Node.cpp">
+    <ClCompile Include="src\GUI\GraphView\Nodes\node.cpp">
       <Filter>GUI\GraphView</Filter>
     </ClCompile>
     <ClCompile Include="src\GUI\GraphView\graph_renderer.cpp">
@@ -124,5 +127,6 @@
     <ClCompile Include="src\Project Generation\generate.cpp">
       <Filter>Project Generation</Filter>
     </ClCompile>
+    <ClCompile Include="src\GUI\GraphView\Nodes\test_node.cpp" />
   </ItemGroup>
 </Project>
