@@ -16,6 +16,12 @@
     <Filter Include="GUI\GraphView">
       <UniqueIdentifier>{E625F731-52E6-7268-1B21-BCE587A0B744}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GUI\GraphView\Nodes">
+      <UniqueIdentifier>{2EFC3556-9A5D-1364-23CB-59168F2B4A23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GUI\GraphView\Nodes\Math">
+      <UniqueIdentifier>{C72D1FC2-B352-6E42-DC9D-53D2C8216D60}</UniqueIdentifier>
+    </Filter>
     <Filter Include="IO">
       <UniqueIdentifier>{FD735900-E9FF-870B-52AE-880B3E59880B}</UniqueIdentifier>
     </Filter>
@@ -39,13 +45,25 @@
     <ClInclude Include="src\Debug\debug.h">
       <Filter>Debug</Filter>
     </ClInclude>
+    <ClInclude Include="src\GUI\GraphView\Nodes\Math\add_node.h">
+      <Filter>GUI\GraphView\Nodes\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GUI\GraphView\Nodes\Math\float_node.h">
+      <Filter>GUI\GraphView\Nodes\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GUI\GraphView\Nodes\node.h">
+      <Filter>GUI\GraphView\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GUI\GraphView\Nodes\test_node.h">
+      <Filter>GUI\GraphView\Nodes</Filter>
+    </ClInclude>
     <ClInclude Include="src\GUI\GraphView\graph_renderer.h">
       <Filter>GUI\GraphView</Filter>
     </ClInclude>
     <ClInclude Include="src\GUI\GraphView\graph_view.h">
       <Filter>GUI\GraphView</Filter>
     </ClInclude>
-    <ClInclude Include="src\GUI\GraphView\Nodes\node.h">
+    <ClInclude Include="src\GUI\GraphView\nodes.h">
       <Filter>GUI\GraphView</Filter>
     </ClInclude>
     <ClInclude Include="src\GUI\view.h">
@@ -62,9 +80,6 @@
     </ClInclude>
     <ClInclude Include="src\defs.h" />
     <ClInclude Include="src\pch.h" />
-    <ClInclude Include="src\GUI\GraphView\graph_renderer.inl" />
-    <ClInclude Include="src\GUI\GraphView\Nodes\test_node.h" />
-    <ClInclude Include="src\GUI\GraphView\nodes.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Architecture\application.cpp">
@@ -100,6 +115,9 @@
     <ClCompile Include="src\Dependencies\imgui_impl_opengl3.cpp">
       <Filter>Dependencies</Filter>
     </ClCompile>
+    <ClCompile Include="src\Dependencies\imgui_stdlib.cpp">
+      <Filter>Dependencies</Filter>
+    </ClCompile>
     <ClCompile Include="src\Dependencies\imgui_tables.cpp">
       <Filter>Dependencies</Filter>
     </ClCompile>
@@ -109,8 +127,17 @@
     <ClCompile Include="src\Dependencies\imnodes.cpp">
       <Filter>Dependencies</Filter>
     </ClCompile>
+    <ClCompile Include="src\GUI\GraphView\Nodes\Math\add_node.cpp">
+      <Filter>GUI\GraphView\Nodes\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUI\GraphView\Nodes\Math\float_node.cpp">
+      <Filter>GUI\GraphView\Nodes\Math</Filter>
+    </ClCompile>
     <ClCompile Include="src\GUI\GraphView\Nodes\node.cpp">
-      <Filter>GUI\GraphView</Filter>
+      <Filter>GUI\GraphView\Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUI\GraphView\Nodes\test_node.cpp">
+      <Filter>GUI\GraphView\Nodes</Filter>
     </ClCompile>
     <ClCompile Include="src\GUI\GraphView\graph_renderer.cpp">
       <Filter>GUI\GraphView</Filter>
@@ -127,6 +154,5 @@
     <ClCompile Include="src\Project Generation\generate.cpp">
       <Filter>Project Generation</Filter>
     </ClCompile>
-    <ClCompile Include="src\GUI\GraphView\Nodes\test_node.cpp" />
   </ItemGroup>
 </Project>

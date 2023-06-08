@@ -15,7 +15,7 @@ struct Pin {
 };
 
 struct Node {
-    Node(const std::string& title, float x, float y);
+    Node(const std::string& title, float x, float y, unsigned int title_color=0xFF244816);
     virtual ~Node();
 
     void Draw();
@@ -40,6 +40,8 @@ protected:
 private:
     std::string title;
 
+    unsigned int title_bar_color;
+    unsigned int title_bar_color_hvr;
 
 // STATIC HELPERS 
 protected:

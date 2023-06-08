@@ -7,7 +7,14 @@
 
 /// DLL
 
-#define ATTACH_EDITOR(project) HMODULE editorDLL = LoadLibraryA("Editor.dll");\
+#ifdef _DEBUG
+#define EDITOR_DLL_PATH "Z:/Dev/Xi/Build/Runtime/Editor.dll"
+#else
+#define EDITOR_DLL_PATH "Editor.dll"
+#endif
+
+
+#define ATTACH_EDITOR(project) HMODULE editorDLL = LoadLibraryA(EDITOR_DLL_PATH);\
 if (editorDLL == nullptr)\
 {\
 Debug::Log("Editor DLL has not been loaded!"); \
