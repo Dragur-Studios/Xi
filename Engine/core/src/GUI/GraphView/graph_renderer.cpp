@@ -37,7 +37,10 @@ void GraphRenderer::Update()
 {
     
     
-
+    for (const auto& node : nodes)
+    {
+        node->Update();
+    }
     
 
 }
@@ -63,17 +66,69 @@ void GraphRenderer::Render()
 
     for (int i = 0; i < links.size(); ++i)
     {
-        const std::pair<int, int> p = links[i];
-        ImNodes::Link(i, p.first, p.second);
+        std::pair<Pin*, Pin*> p = links[i];
+        // pass the data through the graph
+        p.second->data = p.first->data;
+
+        ImNodes::Link(i, p.first->id, p.second->id);
     }
     
     ImNodes::EndNodeEditor();
 
     // link detection
-    int start_attr, end_attr;
-    if (ImNodes::IsLinkCreated(&start_attr, &end_attr))
+    //Pin start_attr, end_attr;
+    int output_id, input_id;
+    if (ImNodes::IsLinkCreated(&output_id, &input_id))
     {
-        links.push_back(std::make_pair(start_attr, end_attr));
+        // on link
+        
+        Node* outputNode = nullptr;
+        Node* inputNode = nullptr;
+        Pin* outputPin = nullptr;
+        Pin* inputPin = nullptr;
+
+        for (size_t i = 0; i < nodes.size(); i++)
+        {
+
+            for (size_t j = 0; j < nodes[i]->pins.size(); j++)
+            {
+                if (nodes[i]->pins[j].id == output_id) {
+                    outputNode = nodes[i];
+                    outputPin = &nodes[i]->pins[j];
+                }
+                else if (nodes[i]->pins[j].id == input_id) {
+                    inputNode = nodes[i];
+                    inputPin = &nodes[i]->pins[j];
+                }
+
+            }
+        }
+
+        if (inputPin != nullptr && outputPin != nullptr) {
+            
+            inputPin->data = outputPin->data;
+
+            outputNode->OnLink(*outputPin, *inputPin);
+
+
+        }
+        else {
+            LOG_ERROR("Coulr Not Find Pin");
+        }
+
+        //end_attr.value = start_attr.value;
+        
+        LOG_INFO("ON LINK!");
+
+        links.push_back(std::make_pair(outputPin, inputPin));
+    }
+
+    const int num_selected_links = ImNodes::NumSelectedLinks();
+    if (num_selected_links > 0)
+    {
+        std::vector<int> selected_links;
+        selected_links.resize(num_selected_links);
+        ImNodes::GetSelectedLinks(selected_links.data());
     }
 
     // selection detection

@@ -54,7 +54,7 @@
     <ClInclude Include="src\GUI\GraphView\Nodes\node.h">
       <Filter>GUI\GraphView\Nodes</Filter>
     </ClInclude>
-    <ClInclude Include="src\GUI\GraphView\Nodes\test_node.h">
+    <ClInclude Include="src\GUI\GraphView\Nodes\start_node.h">
       <Filter>GUI\GraphView\Nodes</Filter>
     </ClInclude>
     <ClInclude Include="src\GUI\GraphView\graph_renderer.h">
@@ -136,7 +136,7 @@
     <ClCompile Include="src\GUI\GraphView\Nodes\node.cpp">
       <Filter>GUI\GraphView\Nodes</Filter>
     </ClCompile>
-    <ClCompile Include="src\GUI\GraphView\Nodes\test_node.cpp">
+    <ClCompile Include="src\GUI\GraphView\Nodes\start_node.cpp">
       <Filter>GUI\GraphView\Nodes</Filter>
     </ClCompile>
     <ClCompile Include="src\GUI\GraphView\graph_renderer.cpp">

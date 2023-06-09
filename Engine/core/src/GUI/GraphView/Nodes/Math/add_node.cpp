@@ -7,19 +7,140 @@
 AddNode::AddNode(float x, float y)
 	: Node("Add", x, y)
 {
-	
+
 }
 
 AddNode::~AddNode()
 {
 }
 
-void AddNode::Create()
+void AddNode::OnLink(Pin outputPin, Pin inputPin)
 {
-	AddPin(PinType::Input);
-	AddPin(PinType::Input);
-	AddPin(PinType::Output);
+	inputPin.classification = outputPin.classification;
+	inputPin.data = inputPin.data;
+	
+	switch (outputPin.classification)
+	{
+	case PinClass::Float:
+		operation = [this]() {
+			return this->AddAsFloat();
+		};
+		break;
+	case PinClass::Float2:
+		operation = [this]() {
+			return this->AddAsFloat2();
+		};
+		break;
+	case PinClass::Float3:
+		operation = [this]() {
+			return this->AddAsFloat3();
+		};
+		break;
+	case PinClass::Float4:
+		operation = [this]() {
+			return this->AddAsFloat4();
+		};
+		break;
+	}
+}
 
+void AddNode::OnCreateGUI()
+{
+	AddPin(PinType::Input, PinClass::Float);
+	AddPin(PinType::Input, PinClass::Float);
+	AddPin(PinType::Output, PinClass::Float);
+
+}
+
+void AddNode::AddAsFloat()
+{
+	float sum = 0;
+	for (size_t i = 0; i < pins.size(); i++)
+	{
+		if (pins[i].type == PinType::Input) {
+			sum += pins[i].data[0];
+		}
+	}
+
+	for (size_t i = 0; i < pins.size(); i++)
+	{
+		if (pins[i].type == PinType::Output) {
+			pins[i].data[0] = sum;
+		}
+	}
+
+}
+
+void AddNode::AddAsFloat2()
+{
+	float f1 = 0;
+	float f2 = 0;
+	for (size_t i = 0; i < pins.size(); i++)
+	{
+		if (pins[i].type == PinType::Input) {
+			f1 += pins[i].data[0];
+			f2 += pins[i].data[1];
+		}
+	}
+
+	for (size_t i = 0; i < pins.size(); i++)
+	{
+		if (pins[i].type == PinType::Output) {
+			pins[i].data[0] = f1;
+			pins[i].data[1] = f2;
+		}
+	}
+}
+
+void AddNode::AddAsFloat3()
+{
+	float f1 = 0;
+	float f2 = 0;
+	float f3 = 0;
+	for (size_t i = 0; i < pins.size(); i++)
+	{
+		if (pins[i].type == PinType::Input) {
+			f1 += pins[i].data[0];
+			f2 += pins[i].data[1];
+			f3 += pins[i].data[2];
+		}
+	}
+
+	for (size_t i = 0; i < pins.size(); i++)
+	{
+		if (pins[i].type == PinType::Output) {
+			pins[i].data[0] = f1;
+			pins[i].data[1] = f2;
+			pins[i].data[2] = f3;
+		}
+	}
+}
+
+void AddNode::AddAsFloat4()
+{
+	float f1 = 0;
+	float f2 = 0;
+	float f3 = 0;
+	float f4 = 0;
+	for (size_t i = 0; i < pins.size(); i++)
+	{
+		if (pins[i].type == PinType::Input) {
+			f1 += pins[i].data[0];
+			f2 += pins[i].data[1];
+			f3 += pins[i].data[2];
+			f4 += pins[i].data[3];
+		}
+	}
+
+	for (size_t i = 0; i < pins.size(); i++)
+	{
+		if (pins[i].type == PinType::Output) {
+			pins[i].data[0] = f1;
+			pins[i].data[1] = f2;
+			pins[i].data[2] = f3;
+			pins[i].data[3] = f4;
+		}
+	}
 }
 
 
@@ -35,11 +156,19 @@ SubtractNode::~SubtractNode()
 {
 }
 
-void SubtractNode::Create()
+void SubtractNode::OnLink(Pin outputPin, Pin inputPin)
 {
-	AddPin(PinType::Input);
-	AddPin(PinType::Input);
-	AddPin(PinType::Output);
+	inputPin.classification = outputPin.classification;
+	inputPin.data = inputPin.data;
+
+}
+
+void SubtractNode::OnCreateGUI()
+{
+
+	AddPin(PinType::Input, PinClass::Float);
+	AddPin(PinType::Input, PinClass::Float);
+	AddPin(PinType::Output, PinClass::Float);
 
 }
 
@@ -54,11 +183,19 @@ MultiplyNode::~MultiplyNode()
 {
 }
 
-void MultiplyNode::Create()
+void MultiplyNode::OnLink(Pin outputPin, Pin inputPin)
 {
-	AddPin(PinType::Input);
-	AddPin(PinType::Input);
-	AddPin(PinType::Output);
+	inputPin.classification = outputPin.classification;
+	inputPin.data = inputPin.data;
+
+
+}
+
+void MultiplyNode::OnCreateGUI()
+{
+	AddPin(PinType::Input, PinClass::Float);
+	AddPin(PinType::Input, PinClass::Float);
+	AddPin(PinType::Output, PinClass::Float);
 
 }
 
@@ -74,10 +211,16 @@ DivideNode::~DivideNode()
 {
 }
 
-void DivideNode::Create()
+void DivideNode::OnLink(Pin outputPin, Pin inputPin)
 {
-	AddPin(PinType::Input);
-	AddPin(PinType::Input);
-	AddPin(PinType::Output);
+	inputPin.classification = outputPin.classification;
+	inputPin.data = inputPin.data;
+}
 
+void DivideNode::OnCreateGUI()
+{
+
+	AddPin(PinType::Input, PinClass::Float);
+	AddPin(PinType::Input, PinClass::Float);
+	AddPin(PinType::Output, PinClass::Float);
 }

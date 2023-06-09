@@ -9,13 +9,12 @@
 using namespace glm;
 
 enum class NodeType {
-	
+	None,
+
 	Float,
 	Float2,
 	Float3,
 	Float4,
-
-
 
 	Add, 
 	Subtract,

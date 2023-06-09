@@ -8,8 +8,7 @@ void GraphRenderer::AddNode(float x, float y)
 {
     T* node = new T(x, y);
 
-    node->Create();
-
+    node->OnCreateGUI();
 
     ImNodes::SetNodeScreenSpacePos(node->id, ImVec2(x, y));
     ImNodes::SnapNodeToGrid(node->id);

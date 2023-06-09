@@ -8,8 +8,9 @@ struct FloatNode :
 	FloatNode(int x, int y);
 	~FloatNode();
 
-	virtual void Create() override;
+	virtual void OnCreateGUI() override;
 
+	virtual void OnLink(Pin outputPin, Pin inputPin) override;
 
 };
 
@@ -19,8 +20,9 @@ struct Float2Node :
 	Float2Node(int x, int y);
 	~Float2Node();
 
-	virtual void Create() override;
+	virtual void OnCreateGUI() override;
 
+	virtual void OnLink(Pin outputPin, Pin inputPin) override;
 
 };
 
@@ -30,8 +32,9 @@ struct Float3Node :
 	Float3Node(int x, int y);
 	~Float3Node();
 
-	virtual void Create() override;
+	virtual void OnCreateGUI() override;
 
+	virtual void OnLink(Pin outputPin, Pin inputPin) override;
 
 };
 
@@ -41,7 +44,8 @@ struct Float4Node :
 	Float4Node(int x, int y);
 	~Float4Node();
 
-	virtual void Create() override;
+	virtual void OnCreateGUI() override;
 
+	virtual void OnLink(Pin outputPin, Pin inputPin) override;
 
 };

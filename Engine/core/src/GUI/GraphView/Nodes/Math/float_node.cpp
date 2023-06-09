@@ -10,9 +10,13 @@ FloatNode::~FloatNode()
 {
 }
 
-void FloatNode::Create()
+void FloatNode::OnCreateGUI()
 {
-	AddPin(PinType::Output);
+	AddPin(PinType::Output, PinClass::Float);
+}
+
+void FloatNode::OnLink(Pin outputPin, Pin inputPin)
+{/*NO LINK*/
 }
 
 // FLOAT 2
@@ -27,10 +31,13 @@ Float2Node::~Float2Node()
 {
 }
 
-void Float2Node::Create()
+void Float2Node::OnCreateGUI()
 {
-	AddPin(PinType::Output);
+	AddPin(PinType::Output, PinClass::Float2);
 }
+
+void Float2Node::OnLink(Pin outputPin, Pin inputPin)
+{/*NO LINK*/}
 
 // FLOAT 3
 
@@ -44,9 +51,14 @@ Float3Node::~Float3Node()
 {
 }
 
-void Float3Node::Create()
+void Float3Node::OnCreateGUI()
 {
-	AddPin(PinType::Output);
+	AddPin(PinType::Output, PinClass::Float3);
+
+}
+
+void Float3Node::OnLink(Pin outputPin, Pin inputPin)
+{/*NO LINK*/
 }
 
 
@@ -62,7 +74,11 @@ Float4Node::~Float4Node()
 {
 }
 
-void Float4Node::Create()
+void Float4Node::OnCreateGUI()
 {
-	AddPin(PinType::Output);
+	AddPin(PinType::Output, PinClass::Float4);
+}
+
+void Float4Node::OnLink(Pin outputPin, Pin inputPin)
+{/*NO LINK*/
 }

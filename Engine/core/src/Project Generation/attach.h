@@ -6,9 +6,15 @@
 #include "architecture/game.h"
 
 /// DLL
+#define _Z 0
+#define _D 1
 
 #ifdef _DEBUG
+#if _Z
 #define EDITOR_DLL_PATH "Z:/Dev/Xi/Build/Runtime/Editor.dll"
+#elif _D
+#define EDITOR_DLL_PATH "D:/Dev/Draugr Studios/Xi/Build/Runtime/Editor.dll"
+#endif
 #else
 #define EDITOR_DLL_PATH "Editor.dll"
 #endif

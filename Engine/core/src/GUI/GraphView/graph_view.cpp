@@ -6,11 +6,13 @@
 #include "imgui/misc/cpp/imgui_stdlib.h"
 
 #include "graph_renderer.h"
-//#include "graph_renderer_impl.h"
+
 
 #include "imnodes/imnodes.h"
 
 #include "nodes.h"
+#include "nodes/start_node.h"
+
 std::map<std::string, NodeData> GraphView::searchResults{};
 std::map<std::string, NodeData> GraphView::nodeTable=
 {
@@ -19,15 +21,17 @@ std::map<std::string, NodeData> GraphView::nodeTable=
 	{ "Multiply",	NodeData{ "math",	NodeType::Multiply} },
 	{ "Divide",		NodeData{ "math",	NodeType::Divide }},
 	{ "Float",		NodeData{ "types",	NodeType::Float }},
-	{ "Float2",		NodeData{ "types",	NodeType::Float }},
-	{ "Float3",		NodeData{ "types",	NodeType::Float }},
-	{ "Float4",		NodeData{ "types",	NodeType::Float }},
+	{ "Float2",		NodeData{ "types",	NodeType::Float2 }},
+	{ "Float3",		NodeData{ "types",	NodeType::Float3 }},
+	{ "Float4",		NodeData{ "types",	NodeType::Float4 }},
 };
 
 GraphView::GraphView(const std::string& name) 
 	: View(name)
 {
 	renderer = new GraphRenderer();
+
+	renderer->AddNode<StartNode>(0, 0);
 };
 
 
@@ -134,6 +138,8 @@ void GraphView::CreateNode(const std::string& name, NodeType type, ImVec2 positi
 		case NodeType::Float4:
 			renderer->AddNode<Float4Node>(position.x, position.y);
 			break;
+
+
 		case NodeType::Add:
 			renderer->AddNode<AddNode>(position.x, position.y);
 			break;

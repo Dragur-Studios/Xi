@@ -18,7 +18,7 @@ public:
     
 private:
     std::vector<struct Node*> nodes;
-    std::vector<std::pair<int, int>> links;
+    std::vector<std::pair<struct Pin*, struct Pin*>> links;
 
     struct ImNodesContext* context;
 };

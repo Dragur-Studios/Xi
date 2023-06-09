@@ -11,7 +11,16 @@ public:
 	AddNode(float x, float y);
 	~AddNode();
 
-	virtual void Create() override;
+	virtual void OnLink(Pin outputPin, Pin inputPin) override;
+
+	virtual void OnCreateGUI() override;
+
+protected:
+	void AddAsFloat();
+	void AddAsFloat2();
+	void AddAsFloat3();
+	void AddAsFloat4();
+
 
 };
 
@@ -23,7 +32,9 @@ public:
 	SubtractNode(float x, float y);
 	~SubtractNode();
 
-	virtual void Create() override;
+	virtual void OnLink(Pin outputPin, Pin inputPin) override;
+
+	virtual void OnCreateGUI() override;
 
 };
 
@@ -33,8 +44,10 @@ struct MultiplyNode :
 public:
 	MultiplyNode(float x, float y);
 	~MultiplyNode();
+	
+	virtual void OnLink(Pin outputPin, Pin inputPin) override;
 
-	virtual void Create() override;
+	virtual void OnCreateGUI() override;
 
 };
 
@@ -45,6 +58,8 @@ public:
 	DivideNode(float x, float y);
 	~DivideNode();
 
-	virtual void Create() override;
+	virtual void OnLink(Pin outputPin, Pin inputPin) override;
+
+	virtual void OnCreateGUI() override;
 
 };
