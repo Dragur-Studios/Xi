@@ -5,35 +5,6 @@
 
 #include <functional>
 
-enum class PinType {
-    Input,
-    Output
-};
-
-enum class PinClass {
-    Float,
-    Float2,
-    Float3,
-    Float4,
-};
-
-enum class PinFlags {
-    None=0,
-    NoEdit,
-};
-
-struct Pin {
-    int id;
-    PinType type;
-    PinFlags flags;
-    PinClass classification;
-
-    float* data;
-
-};
-
-using NodeOperation = void(*)();
-
 struct Node {
 
     Node(const std::string& title, float x, float y, unsigned int title_color=0xFF244816);
@@ -42,10 +13,10 @@ struct Node {
     void Update();
     void Draw();
 
-    virtual void OnLink(Pin outputPin, Pin inputPin) = 0;
+    virtual void OnLink(struct Pin outputPin, struct  Pin inputPin) = 0;
     virtual void OnCreateGUI() = 0;
 
-    std::vector<Pin> pins;
+    std::vector<struct Pin> pins;
 
     int id;
     struct {
@@ -58,7 +29,7 @@ protected:
     void DrawTitleBox();
     void DrawPins();
 
-    void AddPin(PinType type, PinClass classification, PinFlags flags=PinFlags::None);
+    void AddPin(enum class PinType type, enum class PinClass classification, enum class PinFlags flags);
 
     std::function<void()> operation;
     

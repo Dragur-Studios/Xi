@@ -14,7 +14,7 @@
 
 
 #include "nodes.h"
-
+#include "Pins/Pin.h"
 
 GraphRenderer::GraphRenderer()
 {

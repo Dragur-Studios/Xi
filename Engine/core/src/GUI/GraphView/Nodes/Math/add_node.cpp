@@ -2,6 +2,7 @@
 
 #include "imnodes/imnodes.h"
 
+#include "gui/graphview/pins/pin.h"
 
 // Add
 AddNode::AddNode(float x, float y)
@@ -18,6 +19,8 @@ void AddNode::OnLink(Pin outputPin, Pin inputPin)
 {
 	inputPin.classification = outputPin.classification;
 	inputPin.data = inputPin.data;
+	
+
 	
 	switch (outputPin.classification)
 	{
@@ -46,101 +49,104 @@ void AddNode::OnLink(Pin outputPin, Pin inputPin)
 
 void AddNode::OnCreateGUI()
 {
-	AddPin(PinType::Input, PinClass::Float);
-	AddPin(PinType::Input, PinClass::Float);
-	AddPin(PinType::Output, PinClass::Float);
+	AddPin(PinType::Input, PinClass::Float, PinFlags::None);
+	AddPin(PinType::Input, PinClass::Float, PinFlags::None);
+	AddPin(PinType::Output, PinClass::Float, PinFlags::None);
 
 }
 
 void AddNode::AddAsFloat()
 {
-	float sum = 0;
+	float* buffer = (float*)calloc(1, sizeof(float));
+
 	for (size_t i = 0; i < pins.size(); i++)
 	{
 		if (pins[i].type == PinType::Input) {
-			sum += pins[i].data[0];
+			buffer[i] += ((float*)(pins[i].data))[0];
 		}
 	}
 
 	for (size_t i = 0; i < pins.size(); i++)
 	{
 		if (pins[i].type == PinType::Output) {
-			pins[i].data[0] = sum;
+			pins[i].data = (void*)buffer;
 		}
 	}
+
+	free(buffer);
 
 }
 
 void AddNode::AddAsFloat2()
 {
-	float f1 = 0;
-	float f2 = 0;
+	float* buffer= (float*)calloc(2, sizeof(float));
+
 	for (size_t i = 0; i < pins.size(); i++)
 	{
 		if (pins[i].type == PinType::Input) {
-			f1 += pins[i].data[0];
-			f2 += pins[i].data[1];
+			for (size_t j = 0; j < 2; j++)
+			{
+				buffer[i] += ((float*)(pins[i].data))[i];
+			}
 		}
 	}
 
 	for (size_t i = 0; i < pins.size(); i++)
 	{
 		if (pins[i].type == PinType::Output) {
-			pins[i].data[0] = f1;
-			pins[i].data[1] = f2;
+			pins[i].data = (void*)buffer;
 		}
 	}
+
+	free(buffer);
 }
 
 void AddNode::AddAsFloat3()
 {
-	float f1 = 0;
-	float f2 = 0;
-	float f3 = 0;
+	float* buffer = (float*)calloc(3, sizeof(float));
+
 	for (size_t i = 0; i < pins.size(); i++)
 	{
 		if (pins[i].type == PinType::Input) {
-			f1 += pins[i].data[0];
-			f2 += pins[i].data[1];
-			f3 += pins[i].data[2];
+			for (size_t j = 0; j < 3; j++)
+			{
+				buffer[i] += ((float*)(pins[i].data))[i];
+			}
 		}
 	}
 
 	for (size_t i = 0; i < pins.size(); i++)
 	{
 		if (pins[i].type == PinType::Output) {
-			pins[i].data[0] = f1;
-			pins[i].data[1] = f2;
-			pins[i].data[2] = f3;
+			pins[i].data = (void*)buffer;
 		}
 	}
+
+	free(buffer);
 }
 
 void AddNode::AddAsFloat4()
 {
-	float f1 = 0;
-	float f2 = 0;
-	float f3 = 0;
-	float f4 = 0;
+	float* buffer = (float*)calloc(2, sizeof(float));
+
 	for (size_t i = 0; i < pins.size(); i++)
 	{
 		if (pins[i].type == PinType::Input) {
-			f1 += pins[i].data[0];
-			f2 += pins[i].data[1];
-			f3 += pins[i].data[2];
-			f4 += pins[i].data[3];
+			for (size_t j = 0; j < 2; j++)
+			{
+				buffer[i] += ((float*)(pins[i].data))[i];
+			}
 		}
 	}
 
 	for (size_t i = 0; i < pins.size(); i++)
 	{
 		if (pins[i].type == PinType::Output) {
-			pins[i].data[0] = f1;
-			pins[i].data[1] = f2;
-			pins[i].data[2] = f3;
-			pins[i].data[3] = f4;
+			pins[i].data = (void*)buffer;
 		}
 	}
+
+	free(buffer);
 }
 
 
@@ -166,9 +172,9 @@ void SubtractNode::OnLink(Pin outputPin, Pin inputPin)
 void SubtractNode::OnCreateGUI()
 {
 
-	AddPin(PinType::Input, PinClass::Float);
-	AddPin(PinType::Input, PinClass::Float);
-	AddPin(PinType::Output, PinClass::Float);
+	AddPin(PinType::Input, PinClass::Float, PinFlags::None);
+	AddPin(PinType::Input, PinClass::Float, PinFlags::None);
+	AddPin(PinType::Output, PinClass::Float, PinFlags::None);
 
 }
 
@@ -193,9 +199,9 @@ void MultiplyNode::OnLink(Pin outputPin, Pin inputPin)
 
 void MultiplyNode::OnCreateGUI()
 {
-	AddPin(PinType::Input, PinClass::Float);
-	AddPin(PinType::Input, PinClass::Float);
-	AddPin(PinType::Output, PinClass::Float);
+	AddPin(PinType::Input, PinClass::Float, PinFlags::None);
+	AddPin(PinType::Input, PinClass::Float, PinFlags::None);
+	AddPin(PinType::Output, PinClass::Float, PinFlags::None);
 
 }
 
@@ -220,7 +226,7 @@ void DivideNode::OnLink(Pin outputPin, Pin inputPin)
 void DivideNode::OnCreateGUI()
 {
 
-	AddPin(PinType::Input, PinClass::Float);
-	AddPin(PinType::Input, PinClass::Float);
-	AddPin(PinType::Output, PinClass::Float);
+	AddPin(PinType::Input, PinClass::Float, PinFlags::None);
+	AddPin(PinType::Input, PinClass::Float, PinFlags::None);
+	AddPin(PinType::Output, PinClass::Float, PinFlags::None);
 }

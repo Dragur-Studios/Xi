@@ -3,6 +3,8 @@
 #include "imgui/imgui.h"
 #include "imnodes/imnodes.h"
 
+#include "../Pins/Pin.h"
+
 int Node::attr_id = 0;
 int Node::node_id = 0;
 
@@ -65,22 +67,22 @@ void Node::DrawPins()
 				{
 					case PinClass::Float:
 					{
-						ImGui::InputFloat("Input", pin.data, 0.1f, 0.5f, "%.00f");
+						ImGui::InputFloat("Input", (float*)pin.data, 0.1f, 0.5f, "%.00f");
 						break;
 					}
 					case PinClass::Float2:
 					{
-						ImGui::InputFloat2("Input", pin.data, "%.00f");
+						ImGui::InputFloat2("Input", (float*)pin.data, "%.00f");
 						break;
 					}
 					case PinClass::Float3:
 					{
-						ImGui::InputFloat3("Input", pin.data, "%.00f");
+						ImGui::InputFloat3("Input", (float*)pin.data, "%.00f");
 						break;
 					}
 					case PinClass::Float4:
 					{
-						ImGui::InputFloat4("Input", pin.data, "%.00f");
+						ImGui::InputFloat4("Input", (float*)pin.data, "%.00f");
 						break;
 					}
 				}
@@ -108,22 +110,22 @@ void Node::DrawPins()
 				{
 					case PinClass::Float:
 					{
-						ImGui::InputFloat("Input", pin.data, 0.1f, 0.5f, "%.00f");
+						ImGui::InputFloat("Input", (float*)pin.data, 0.1f, 0.5f, "%.00f");
 						break;
 					}
 					case PinClass::Float2:
 					{
-						ImGui::InputFloat2("Input", pin.data, "%.00f");
+						ImGui::InputFloat2("Input", (float*)pin.data, "%.00f");
 						break;
 					}
 					case PinClass::Float3:
 					{
-						ImGui::InputFloat3("Input", pin.data, "%.00f");
+						ImGui::InputFloat3("Input", (float*)pin.data, "%.00f");
 						break;
 					}
 					case PinClass::Float4:
 					{
-						ImGui::InputFloat4("Input", pin.data, "%.00f");
+						ImGui::InputFloat4("Input", (float*)pin.data, "%.00f");
 						break;
 					}
 				}
@@ -149,29 +151,47 @@ void Node::AddPin(PinType type,  PinClass classification, PinFlags flags)
 	switch (classification)
 	{
 	case PinClass::Float:
-		p.data = (float*)malloc(sizeof(float));
-		p.data[0] = 0;
+	{
+		float* buffer = (float*)malloc(sizeof(float));
+		buffer[0] = 0;
+
+		p.data = (void*)buffer;
 		break;
+	}
 	case PinClass::Float2:
-		p.data = (float*)malloc(sizeof(float) * 2);
-		p.data[0] = 0;
-		p.data[1] = 0;
+	{
+
+		float* buffer = (float*)malloc(sizeof(float) * 2);
+		buffer[0] = 0;
+		buffer[1] = 0;
+
+		p.data = (void*)buffer;
 		break;
+	}
 	case PinClass::Float3:
-		p.data = (float*)malloc(sizeof(float) * 3);
-		p.data[0] = 0;
-		p.data[1] = 0;
-		p.data[2] = 0;
+	{
+
+		float* buffer = (float*)malloc(sizeof(float) * 3);
+		buffer[0] = 0;
+		buffer[1] = 0;
+		buffer[2] = 0;
+
+		p.data = (void*)buffer;
+
 		break;
-	case PinClass::Float4:
-		p.data = (float*)malloc(sizeof(float) * 4);
-		p.data[0] = 0;
-		p.data[1] = 0;
-		p.data[2] = 0;
-		p.data[3] = 0;
+	}
+	case PinClass::Float4: {
+
+		float* buffer = (float*)malloc(sizeof(float) * 4);
+		buffer[0] = 0;
+		buffer[1] = 0;
+		buffer[2] = 0;
+		buffer[3] = 0;
+
+		p.data = (void*)buffer;
+
 		break;
-	default:
-		break;
+	}
 	}
 	p.flags = flags;
 	

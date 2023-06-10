@@ -1,5 +1,6 @@
 #include "start_node.h"
 
+#include "GUI/GraphView//Pins/Pin.h"
 
 StartNode::StartNode(float x, float y)
 	: Node("Test Node", x, y)

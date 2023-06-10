@@ -80,6 +80,7 @@
     </ClInclude>
     <ClInclude Include="src\defs.h" />
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\GUI\GraphView\Pins\Pin.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Architecture\application.cpp">
@@ -154,5 +155,6 @@
     <ClCompile Include="src\Project Generation\generate.cpp">
       <Filter>Project Generation</Filter>
     </ClCompile>
+    <ClCompile Include="src\GUI\GraphView\Pins\Pin.cpp" />
   </ItemGroup>
 </Project>

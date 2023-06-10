@@ -1,5 +1,7 @@
 #include "float_node.h"
 
+#include "GUI/GraphView/Pins/Pin.h"
+
 FloatNode::FloatNode(int x, int y)
 	: Node("Float", x, y,  0xFFFF1616)
 {
@@ -12,7 +14,7 @@ FloatNode::~FloatNode()
 
 void FloatNode::OnCreateGUI()
 {
-	AddPin(PinType::Output, PinClass::Float);
+	AddPin(PinType::Output, PinClass::Float, PinFlags::None);
 }
 
 void FloatNode::OnLink(Pin outputPin, Pin inputPin)
@@ -33,7 +35,7 @@ Float2Node::~Float2Node()
 
 void Float2Node::OnCreateGUI()
 {
-	AddPin(PinType::Output, PinClass::Float2);
+	AddPin(PinType::Output, PinClass::Float2, PinFlags::None);
 }
 
 void Float2Node::OnLink(Pin outputPin, Pin inputPin)
@@ -53,7 +55,7 @@ Float3Node::~Float3Node()
 
 void Float3Node::OnCreateGUI()
 {
-	AddPin(PinType::Output, PinClass::Float3);
+	AddPin(PinType::Output, PinClass::Float3, PinFlags::None);
 
 }
 
@@ -76,7 +78,7 @@ Float4Node::~Float4Node()
 
 void Float4Node::OnCreateGUI()
 {
-	AddPin(PinType::Output, PinClass::Float4);
+	AddPin(PinType::Output, PinClass::Float4, PinFlags::None);
 }
 
 void Float4Node::OnLink(Pin outputPin, Pin inputPin)
