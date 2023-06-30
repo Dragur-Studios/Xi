@@ -67,6 +67,7 @@ void GraphView::HandleContextMenu()
 
 		if (!searchQuery.empty()) {
 			ImGui::SameLine(); 
+			
 			if (ImGui::Button("Clear")) {
 				searchQuery.clear();
 			}

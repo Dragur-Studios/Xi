@@ -23,7 +23,8 @@ GraphRenderer::GraphRenderer()
 
     ImNodesIO& io = ImNodes::GetIO();
     io.EmulateThreeButtonMouse.Modifier = &ImGui::GetIO().KeyAlt;
-
+    ImNodes::GetIO().LinkDetachWithModifierClick.Modifier = &ImGui::GetIO().KeyCtrl;
+    ImNodes::PushAttributeFlag(ImNodesAttributeFlags_EnableLinkDetachWithDragClick);
  
 }
 
@@ -45,7 +46,69 @@ void GraphRenderer::Update()
 
 }
 
- 
+template <typename T>
+void deleteElements(std::vector<std::pair<Pin*,Pin*>>& targetList, const std::vector<int>& selectedIDs)
+{
+    std::vector<int> deleteList;
+
+    // Step 2: Search for elements based on selected IDs
+    for (int selectedID : selectedIDs)
+    {
+        auto it = std::find_if(targetList.begin(), targetList.end(), [selectedID](const T& element) {
+            // Modify the condition to match the comparison with the ID in your target list
+            return element.getID() == selectedID;
+            });
+
+        if (it != targetList.end())
+        {
+            // Add the index or reference to the element to the delete list
+            int index = std::distance(targetList.begin(), it);
+            deleteList.push_back(index);
+        }
+    }
+
+    // Step 3: Delete elements from the target list
+    for (auto it = deleteList.rbegin(); it != deleteList.rend(); ++it)
+    {
+        targetList.erase(targetList.begin() + *it);
+    }
+}
+
+
+   //end_attr.value = start_attr.value;
+void GraphRenderer::AquirePins(const Link& link, Pin* output, Pin* input)
+{
+    Node* outputNode = nullptr;
+    Node* inputNode = nullptr;
+
+    for (size_t i = 0; i < nodes.size(); i++)
+    {
+        for (size_t j = 0; j < nodes[i]->pins.size(); j++)
+        {
+            if (nodes[i]->pins[j].id == link.start_attr) {
+                outputNode = nodes[i];
+                output = &nodes[i]->pins[j];
+            }
+            else if (nodes[i]->pins[j].id == link.end_attr) {
+                inputNode = nodes[i];
+                input = &nodes[i]->pins[j];
+            }
+
+        }
+    }
+
+    if (input != nullptr && output != nullptr) {
+
+        input->data = output->data;
+
+        outputNode->OnLink(*output, *input);
+
+
+    }
+    else {
+        LOG_ERROR("Coulr Not Find Pin");
+    }
+}
 
 void GraphRenderer::Render()
 {
@@ -58,7 +121,7 @@ void GraphRenderer::Render()
     ImNodes::GetStyle().Flags |= ImNodesStyleFlags_GridLinesMultipleSizes;
 
     ImNodes::BeginNodeEditor();
-    
+
     for (const auto& node : nodes)
     {
         node->Draw();
@@ -66,72 +129,98 @@ void GraphRenderer::Render()
 
     for (int i = 0; i < links.size(); ++i)
     {
-        std::pair<Pin*, Pin*> p = links[i];
-        // pass the data through the graph
-        p.second->data = p.first->data;
-
-        ImNodes::Link(i, p.first->id, p.second->id);
+        Link p = links[i];
+        ImNodes::Link(p.id, p.start_attr, p.end_attr);
     }
     
     ImNodes::EndNodeEditor();
 
     // link detection
-    //Pin start_attr, end_attr;
-    int output_id, input_id;
-    if (ImNodes::IsLinkCreated(&output_id, &input_id))
     {
-        // on link
-        
-        Node* outputNode = nullptr;
-        Node* inputNode = nullptr;
-        Pin* outputPin = nullptr;
-        Pin* inputPin = nullptr;
 
-        for (size_t i = 0; i < nodes.size(); i++)
+        Link link{};
+        if (ImNodes::IsLinkCreated(&link.start_attr, &link.end_attr))
+        {
+     
+            Pin* inputPin = nullptr;
+            Pin* outputPin = nullptr;
+
+            AquirePins(link, outputPin, inputPin);
+			
+            link.id = ++current_id;
+            links.push_back(link);
+        }
+
+    }
+    {
+
+        //const int num_selected_links = ImNodes::NumSelectedLinks();
+        //if (num_selected_links > 0)
+        //{
+        //    std::vector<int> selected_links;
+        //    selected_links.resize(num_selected_links);
+        //    ImNodes::GetSelectedLinks(selected_links.data());
+
+        //    if (ImGui::IsKeyReleased(ImGuiKey_::ImGuiKey_Delete)) {
+        //        // Step 2: Search for elements based on selected IDs
+        //        for (size_t i = 0; i < selected_links.size(); i++)
+        //        {
+        //            auto it = links.begin() + selected_links[i];
+        //            if (ImNodes::IsLinkDestroyed(&selected_links[i])) {
+        //                links.erase(it);
+        //            }
+
+        //        }
+        //    }
+
+        //}
+    }
+
+    // link stuff
+    {
+        int link_id;
+        if (ImNodes::IsLinkDestroyed(&link_id))
         {
 
-            for (size_t j = 0; j < nodes[i]->pins.size(); j++)
-            {
-                if (nodes[i]->pins[j].id == output_id) {
-                    outputNode = nodes[i];
-                    outputPin = &nodes[i]->pins[j];
-                }
-                else if (nodes[i]->pins[j].id == input_id) {
-                    inputNode = nodes[i];
-                    inputPin = &nodes[i]->pins[j];
-                }
-
-            }
-        }
-
-        if (inputPin != nullptr && outputPin != nullptr) {
+            auto iter =
+                std::find_if(links.begin(), links.end(), [link_id](const Link& link) -> bool {
+                return link.id == link_id;
+                    });
+            assert(iter != links.end());
             
-            inputPin->data = outputPin->data;
+            Pin* inputPin = nullptr;
+            Pin* outputPin = nullptr;
+            AquirePins(links[link_id], outputPin, inputPin);
 
-            outputNode->OnLink(*outputPin, *inputPin);
+            inputPin->data = 0;
 
-
+            links.erase(iter);
         }
-        else {
-            LOG_ERROR("Coulr Not Find Pin");
-        }
-
-        //end_attr.value = start_attr.value;
-        
-        LOG_INFO("ON LINK!");
-
-        links.push_back(std::make_pair(outputPin, inputPin));
     }
-
-    const int num_selected_links = ImNodes::NumSelectedLinks();
-    if (num_selected_links > 0)
     {
-        std::vector<int> selected_links;
-        selected_links.resize(num_selected_links);
-        ImNodes::GetSelectedLinks(selected_links.data());
+        int link_id;
+        if (ImNodes::IsLinkDropped(&link_id))
+        {
+
+            auto iter =
+                std::find_if(links.begin(), links.end(), [link_id](const Link& link) -> bool {
+                return link.id == link_id;
+                    });
+            assert(iter != links.end());
+
+            Pin* inputPin = nullptr;
+            Pin* outputPin = nullptr;
+            AquirePins(links[link_id], outputPin, inputPin);
+
+            inputPin->data = 0;
+
+            links.erase(iter);
+        }
     }
 
-    // selection detection
+   
+
+    // node selection detection
     const int num_selected_nodes = ImNodes::NumSelectedNodes();
     if (num_selected_nodes > 0)
     {

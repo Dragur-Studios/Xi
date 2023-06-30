@@ -20,8 +20,6 @@ void AddNode::OnLink(Pin outputPin, Pin inputPin)
 	inputPin.classification = outputPin.classification;
 	inputPin.data = inputPin.data;
 	
-
-	
 	switch (outputPin.classification)
 	{
 	case PinClass::Float:
@@ -58,11 +56,15 @@ void AddNode::OnCreateGUI()
 void AddNode::AddAsFloat()
 {
 	float* buffer = (float*)calloc(1, sizeof(float));
+	
+	if (buffer == nullptr)
+		return;
 
 	for (size_t i = 0; i < pins.size(); i++)
 	{
+		auto temp = (float*)(pins[i].data);
 		if (pins[i].type == PinType::Input) {
-			buffer[i] += ((float*)(pins[i].data))[0];
+			*buffer += *temp;
 		}
 	}
 
@@ -80,6 +82,9 @@ void AddNode::AddAsFloat()
 void AddNode::AddAsFloat2()
 {
 	float* buffer= (float*)calloc(2, sizeof(float));
+
+	if (buffer == nullptr)
+		return;
 
 	for (size_t i = 0; i < pins.size(); i++)
 	{
@@ -104,7 +109,10 @@ void AddNode::AddAsFloat2()
 void AddNode::AddAsFloat3()
 {
 	float* buffer = (float*)calloc(3, sizeof(float));
-
+	
+	if (buffer == nullptr)
+		return;
+	
 	for (size_t i = 0; i < pins.size(); i++)
 	{
 		if (pins[i].type == PinType::Input) {
@@ -128,6 +136,9 @@ void AddNode::AddAsFloat3()
 void AddNode::AddAsFloat4()
 {
 	float* buffer = (float*)calloc(2, sizeof(float));
+
+	if (buffer == nullptr)
+		return;
 
 	for (size_t i = 0; i < pins.size(); i++)
 	{

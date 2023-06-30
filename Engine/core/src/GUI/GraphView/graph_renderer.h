@@ -3,6 +3,12 @@
 #include "pch.h"
 #include "defs.h"
 
+struct Link
+{
+    int id;
+    int start_attr, end_attr;
+};
+
 class GraphRenderer
 {
 
@@ -16,10 +22,13 @@ public:
     template<class T>
     void AddNode(float x, float y);
     
-private:
-    std::vector<struct Node*> nodes;
-    std::vector<std::pair<struct Pin*, struct Pin*>> links;
+    void AquirePins(const Link& link, struct Pin* a, struct Pin* b);
 
+private:
+    int current_id = 0;
+    std::vector<struct Node*> nodes;
+    std::vector<Link> links;
+    
     struct ImNodesContext* context;
 };
 

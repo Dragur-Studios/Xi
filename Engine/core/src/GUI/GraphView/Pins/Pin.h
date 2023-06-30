@@ -26,7 +26,7 @@ struct Pin {
     PinFlags flags;
     PinClass classification;
 
-    void* data;
+    void* data = nullptr;
 
 
 };

@@ -22,6 +22,9 @@
     <Filter Include="GUI\GraphView\Nodes\Math">
       <UniqueIdentifier>{C72D1FC2-B352-6E42-DC9D-53D2C8216D60}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GUI\GraphView\Pins">
+      <UniqueIdentifier>{EFF0386F-DBD4-F9C4-4435-F4173038E446}</UniqueIdentifier>
+    </Filter>
     <Filter Include="IO">
       <UniqueIdentifier>{FD735900-E9FF-870B-52AE-880B3E59880B}</UniqueIdentifier>
     </Filter>
@@ -57,6 +60,9 @@
     <ClInclude Include="src\GUI\GraphView\Nodes\start_node.h">
       <Filter>GUI\GraphView\Nodes</Filter>
     </ClInclude>
+    <ClInclude Include="src\GUI\GraphView\Pins\Pin.h">
+      <Filter>GUI\GraphView\Pins</Filter>
+    </ClInclude>
     <ClInclude Include="src\GUI\GraphView\graph_renderer.h">
       <Filter>GUI\GraphView</Filter>
     </ClInclude>
@@ -80,7 +86,6 @@
     </ClInclude>
     <ClInclude Include="src\defs.h" />
     <ClInclude Include="src\pch.h" />
-    <ClInclude Include="src\GUI\GraphView\Pins\Pin.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Architecture\application.cpp">
@@ -140,6 +145,9 @@
     <ClCompile Include="src\GUI\GraphView\Nodes\start_node.cpp">
       <Filter>GUI\GraphView\Nodes</Filter>
     </ClCompile>
+    <ClCompile Include="src\GUI\GraphView\Pins\Pin.cpp">
+      <Filter>GUI\GraphView\Pins</Filter>
+    </ClCompile>
     <ClCompile Include="src\GUI\GraphView\graph_renderer.cpp">
       <Filter>GUI\GraphView</Filter>
     </ClCompile>
@@ -155,6 +163,5 @@
     <ClCompile Include="src\Project Generation\generate.cpp">
       <Filter>Project Generation</Filter>
     </ClCompile>
-    <ClCompile Include="src\GUI\GraphView\Pins\Pin.cpp" />
   </ItemGroup>
 </Project>
