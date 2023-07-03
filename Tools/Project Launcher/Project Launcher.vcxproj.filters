@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="views">
+      <UniqueIdentifier>{D39C9110-3FB1-B9C1-0833-5D217406B6F2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\views\project_view.h">
+      <Filter>views</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xiLauncher.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\views\project_view.cpp">
+      <Filter>views</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xiLauncher.cpp" />
+  </ItemGroup>
+</Project>

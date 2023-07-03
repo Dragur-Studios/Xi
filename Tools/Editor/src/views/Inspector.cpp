@@ -4,7 +4,7 @@
 
 
 Inspector::Inspector()
-	: View("Inspector")
+	: View("Inspector", "")
 {
 }
 

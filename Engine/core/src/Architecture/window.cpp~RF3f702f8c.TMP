@@ -233,18 +233,19 @@ bool Window::ProcessEvents() {
 
 	bool exit = glfwWindowShouldClose(win);
 
+	if (exit)
+		return false;
+
 	glfwPollEvents();
 
 	int size_w, size_h;
 	glfwGetFramebufferSize(win, &size_w, &size_h);
 	glViewport(0, 0, size_w, size_h);
 
-	DrawFrame();
+	RenderThunk(&data);
 
 	glfwSwapBuffers(win);
 
-	if (exit)
-		return false;
 
 	return true;
 }
@@ -255,6 +256,7 @@ void Window::Resize(int width, int height)
 	this->height = height;
 	glViewport(0, 0, width, height);
 
+	
 }
 
 void Window::AddView(View* v)
@@ -273,6 +275,7 @@ void Window::RemoveView(View* v)
 
 void Window::DrawFrame()
 {
+
 	// clear the GUI BUFFER
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -285,7 +288,8 @@ void Window::DrawFrame()
 	bool show = true;
 	showDockSpace(&show);
 
-	for (const auto v : views) {
+	auto win = (Window*)glfwGetWindowUserPointer(threadData->pWindow);
+	for (const auto v : win->views) {
 		v->Draw();
 	}
 
@@ -306,6 +310,8 @@ void Window::DrawFrame()
 	
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	
+	threadData->condition->notify_all();
+
 }
 
 void Window::SetCaption(const char* caption) {
@@ -314,6 +320,8 @@ void Window::SetCaption(const char* caption) {
 }
 
 Window::~Window() {
+
+	
 
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();

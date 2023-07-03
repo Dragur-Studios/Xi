@@ -69,5 +69,27 @@ player->OnTick();\
 player->OnShutdown();\
 
 
+#define ATTACK_LAUNCHER() HMODULE launcherDLL = LoadLibraryA("Z:/Dev/Xi/Build/Runtime/Project Launcher.dll");\
+if(launcherDLL == nullptr)\
+{\
+Debug::Log("XiLauncher Could not be found? are you sure you installed the assymbley");\
+return 1;\
+}\
+XiApplicationFunc createLauncher = (XiApplicationFunc)GetProcAddress(launcherDLL, "CreateProjectLauncher");\
+if(createLauncher == nullptr){\
+Debug::Log("CreateProjectLauncher(fun) could not be found!");\
+return 1;\
+}\
+iApplication* launcher = createLauncher();\
+if(launcher == nullptr){\
+Debug::Log("Launcher is Null!");\
+return 1;\
+}\
+Debug::Log("Launcher Created Succssfully!");\
+launcher->OnInitilize(); \
+launcher->OnTick(); \
+launcher->OnShutdown(); \
+
+
 
 

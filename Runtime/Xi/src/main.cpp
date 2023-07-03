@@ -30,19 +30,20 @@ int main() {
 	ENABLE_CRT_MEMORY_LEAK_DETECTION();
 
 	// ATTACH THE PROJECT LAUNCHER
+	ATTACK_LAUNCHER();
+	//std::string project_name;
 
-	std::string project_name;
+	//std::cout << "enter project name" << std::endl;
+	//std::getline(std::cin, project_name);
 
-	std::cout << "enter project name" << std::endl;
-	std::getline(std::cin, project_name);
+	//ProjectGeneratorLocationInfo createInfo{ };
+	//createInfo.Drive = "D:\\";
+	//createInfo.Filepath = "Xi\\Projects\\";
+	//createInfo.WorkspaceDirectory = project_name + "\\";
+	//createInfo.ProjectName = project_name;
 
-	ProjectGeneratorLocationInfo createInfo{ };
-	createInfo.Drive = "D:\\";
-	createInfo.Filepath = "Xi\\Projects\\";
-	createInfo.WorkspaceDirectory = project_name + "\\";
-	createInfo.ProjectName = project_name;
-
-	ProjectGenerator::GenerateProject(&createInfo);
+	//ProjectGenerator::GenerateProject(&createInfo);
+	
 
 	return 0;
 }

@@ -25,11 +25,17 @@
     <Filter Include="GUI\GraphView\Pins">
       <UniqueIdentifier>{EFF0386F-DBD4-F9C4-4435-F4173038E446}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GUI\Visual Elements">
+      <UniqueIdentifier>{6A2E9D80-D68F-7A8E-5FFD-C040CB5DB14D}</UniqueIdentifier>
+    </Filter>
     <Filter Include="IO">
       <UniqueIdentifier>{FD735900-E9FF-870B-52AE-880B3E59880B}</UniqueIdentifier>
     </Filter>
     <Filter Include="Project Generation">
       <UniqueIdentifier>{48F33E05-34D7-FF5A-9D37-FAAD893AEADC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util">
+      <UniqueIdentifier>{23A78D7C-0FDE-8E0D-B8CA-7410A4E00A0F}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -72,6 +78,9 @@
     <ClInclude Include="src\GUI\GraphView\nodes.h">
       <Filter>GUI\GraphView</Filter>
     </ClInclude>
+    <ClInclude Include="src\GUI\Visual Elements\visual_element.h">
+      <Filter>GUI\Visual Elements</Filter>
+    </ClInclude>
     <ClInclude Include="src\GUI\view.h">
       <Filter>GUI</Filter>
     </ClInclude>
@@ -83,6 +92,9 @@
     </ClInclude>
     <ClInclude Include="src\Project Generation\generate.h">
       <Filter>Project Generation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Util\tinyxml2.h">
+      <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="src\defs.h" />
     <ClInclude Include="src\pch.h" />
@@ -154,6 +166,9 @@
     <ClCompile Include="src\GUI\GraphView\graph_view.cpp">
       <Filter>GUI\GraphView</Filter>
     </ClCompile>
+    <ClCompile Include="src\GUI\Visual Elements\visual_element.cpp">
+      <Filter>GUI\Visual Elements</Filter>
+    </ClCompile>
     <ClCompile Include="src\GUI\view.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
@@ -162,6 +177,9 @@
     </ClCompile>
     <ClCompile Include="src\Project Generation\generate.cpp">
       <Filter>Project Generation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Util\tinyxml2.cpp">
+      <Filter>Util</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

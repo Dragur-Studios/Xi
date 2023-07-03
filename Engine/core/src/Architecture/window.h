@@ -6,11 +6,6 @@
 #include <condition_variable>
 #include <atomic>
 
-struct WindowThreadData {
-	struct GLFWwindow* pWindow;
-	std::condition_variable* condition;
-};
-
 class Window
 {
 public:
@@ -25,7 +20,7 @@ public:
 	void AddView(class View* v);
 	void RemoveView(class View* v);
 
-	static void RenderThunk(WindowThreadData* threadData);
+	void DrawFrame();
 
 	static void on_resize(struct GLFWwindow* window, int width, int height);
 	
@@ -39,13 +34,6 @@ private:
 	struct GLFWwindow* win;
 	int width;
 	int height;
-
-
-	std::condition_variable eventsCV;
-	std::mutex drawGUIMutex;
-	std::thread eventThread;
-
-	WindowThreadData data{};
 
 };
 

@@ -27,7 +27,7 @@ std::map<std::string, NodeData> GraphView::nodeTable=
 };
 
 GraphView::GraphView(const std::string& name) 
-	: View(name)
+	: View(name, "")
 {
 	renderer = new GraphRenderer();
 
