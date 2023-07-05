@@ -58,8 +58,7 @@ void View::Render(VisualElement* node)
 	if (node == nullptr)
 		return;
 
-	ImGui::SameLine();
-	ImGui::BeginChild(node->_guid.c_str());
+	//ImGui::BeginChild(node->_guid.c_str());
 	
 	node->Draw();
 
@@ -68,5 +67,5 @@ void View::Render(VisualElement* node)
 		Render(child);
 	}
 
-	ImGui::EndChild();
+	//ImGui::EndChild();
 }

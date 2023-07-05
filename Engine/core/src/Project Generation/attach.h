@@ -6,8 +6,8 @@
 #include "architecture/game.h"
 
 /// DLL
-#define _Z 0
-#define _D 1
+#define _Z 1
+#define _D 0
 
 #ifdef _DEBUG
 #if _Z

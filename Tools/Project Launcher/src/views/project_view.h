@@ -11,7 +11,9 @@ public:
 	ProjectsView();
 	virtual ~ProjectsView();
 
-	virtual void HandleContextMenu();
+	static void CreateProject();
 
+	virtual void HandleContextMenu();
+	static int counter;
 };
 

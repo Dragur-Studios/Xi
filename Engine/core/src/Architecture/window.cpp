@@ -285,6 +285,8 @@ void Window::DrawFrame()
 	bool show = true;
 	showDockSpace(&show);
 
+
+
 	for (const auto v : views) {
 		v->Draw();
 	}

@@ -6,14 +6,148 @@
 
 #include "imgui/imgui.h"
 
+#include "Util/guid.h"
+
+
+struct ImRect {
+	ImVec2 start;
+	ImVec2 end;
+};
 
 class VisualElement {
 public:
 	///TODO! generate GUID
-	VisualElement(ImVec2 position, ImVec2 size, const std::string& type) : _guid{ "####__GUID__" }, _position{ position }, _size{ size }, _type{ type } {};
-	VisualElement() : _guid{ "####__GUID__" }, _position{ 0,0 }, _size{ 0,0 }{};
-	
+	VisualElement()
+	{ };
+
 	virtual ~VisualElement() {};
+
+	
+	void Draw() {
+
+
+		ImDrawList* drawList = ImGui::GetWindowDrawList();
+
+		//offset startposition by the padding, the margin, and the border sizes
+		auto margin = styleSheet.margin;
+		auto border = styleSheet.border;
+		auto padding = styleSheet.padding;
+		
+		auto displaySize = ImGui::GetIO().DisplaySize;
+		
+		// draw margin area
+		{
+			ImVec2 start = ImGui::GetCursorPos();
+			ImVec2 end = start;
+			end.x += margin.x + border.x + padding.x + styleSheet.width;
+			end.y += margin.y + border.y + padding.y + styleSheet.height;
+
+			drawList->AddRectFilled(start, end, 0);
+		}
+		
+		//draw border area
+		{
+			ImVec2 start = ImGui::GetCursorScreenPos();
+			start.x += margin.x / 2.0f;
+			start.y += margin.y / 2.0f;
+
+			ImVec2 end = start;
+			end.x += border.x + padding.x + styleSheet.width;
+			end.y += border.y + padding.y + styleSheet.height;
+
+			drawList->AddRectFilled(start, end, styleSheet.borderColor);
+		}
+
+		//draw padding area
+		{
+			ImVec2 start = ImGui::GetCursorScreenPos();
+			start.x += (margin.x / 2.0f) + (border.x / 2.0f);
+			start.y += (margin.y / 2.0f) + (border.y / 2.0f);
+
+			ImVec2 end = start;
+			end.x += padding.x + styleSheet.width;
+			end.y += padding.y + styleSheet.height;
+
+			drawList->AddRect(start, end, 0);
+		}
+
+
+		//draw content area
+		{
+			ImVec2 start = ImGui::GetCursorScreenPos();
+			start.x += (padding.x / 2.0f) + (margin.x / 2.0f) + (border.x / 2.0f);
+			start.y += (padding.y / 2.0f) + (margin.y / 2.0f) + (border.y / 2.0f);
+
+			ImVec2 end = start;
+			end.x += styleSheet.width;
+			end.y += styleSheet.height;
+
+			Render({start, end});
+		}
+
+		
+		//startPos.x += (margin.x / 2) + (border.x / 2) - (padding.x / 2);
+		//startPos.y += (margin.y / 2) + (border.y / 2) - (padding.y / 2);
+
+		//ImVec2 size = ImVec2(0, 0);
+		//size.x += startPos.x + styleSheet.width + (padding.x / 2);
+		//size.y += startPos.y + styleSheet.height + (padding.y / 2);
+
+		//ImVec2 borderStart = startPos;
+		//borderStart.x += (padding.x / 2) - (border.x / 2);
+		//borderStart.y += (padding.y / 2) - (border.y / 2);
+
+		//// draw content
+		//drawList->AddRectFilled(startPos, size, styleSheet.backgroundColor);
+
+		//ImGui::BeginChild("##MARGIN");
+
+		//// margin
+		//ImGui::Dummy({ 0, styleSheet.margin.x });
+		//ImGui::Dummy({ styleSheet.margin.y, 0 }); ImGui::SameLine();
+
+		//ImGui::PushStyleColor(ImGuiCol_FrameBg, 0xFFAAFFEE);
+
+		//{
+		//	ImGui::BeginChild("##BORDER");
+		//	// border
+		//	ImGui::Dummy({ 0, styleSheet.border.x });
+		//	ImGui::Dummy({ styleSheet.border.y, 0 }); ImGui::SameLine();
+
+		//	ImGui::PushStyleColor(ImGuiCol_FrameBg, ImGui::ColorConvertFloat4ToU32(styleSheet.backgroundColor));
+		//	ImGui::PushStyleColor(ImGuiCol_Button, ImGui::ColorConvertFloat4ToU32(styleSheet.backgroundColor));
+		//	ImGui::PushStyleColor(ImGuiCol_Text, ImGui::ColorConvertFloat4ToU32(styleSheet.color));
+
+		//	Render();
+
+		//	ImGui::PopStyleColor(3);
+
+		//	ImGui::SameLine(); ImGui::Dummy({ styleSheet.border.w, 0 });
+		//	ImGui::Dummy({ 0, styleSheet.border.z });
+		//	ImGui::EndChild();
+		//}
+
+		//ImGui::PopStyleColor();
+
+		//// margin
+		//ImGui::SameLine(); ImGui::Dummy({ styleSheet.margin.w, 0 });
+		//ImGui::Dummy({ 0, styleSheet.margin.z });
+
+		//ImGui::EndChild();
+
+	};
+
+	bool isWithinBounds(ImVec2 position, ImRect bounds) {
+		
+		// Flip the Y-axis position
+	
+		if (position.x >= bounds.start.x && position.x <= bounds.end.x &&
+			position.y >= bounds.start.y && position.y <= bounds.end.y)
+		{
+			return true;
+		}
+		return false;
+	}
 	
 	void Add(VisualElement* element) {
 		children.push_back(element);
@@ -26,7 +160,8 @@ public:
 		}
 	}
 
-	virtual void Draw() = 0;
+	virtual const std::string& Type() = 0;
+	virtual const std::string& Guid() = 0;
 
 	template<typename T>
 	T Q(std::string name = "") {
@@ -44,62 +179,113 @@ public:
 		return {};
 	}
 
-
-	std::string _type;
-	std::string _guid;
 	// rect
 	ImVec2 _position;
-	ImVec2 _size;
 
 	std::vector<VisualElement*> children;
+
+	struct
+	{
+		float width = 0;
+		float height = 0;
+
+		ImVec4 padding	= { 0, 0, 0, 0 };
+		ImVec4 margin	= { 0, 0, 0, 0 };
+		ImVec4 border	= { 0, 0, 0, 0 };
+
+		ImColor color		= { 0, 0, 0, 0 };
+		ImColor borderColor = { 0, 0, 0, 0 };
+
+		ImColor backgroundColor = { 0, 0, 0, 0 };
+		ImColor backgroundHoverColor = { 0, 0, 0, 0 };
+
+	}styleSheet;
+
+protected:
+	virtual void Render(ImRect bounds) = 0;
 
 };
 
 class Group : public VisualElement
 {
 public:
-	Group() : VisualElement({ -1, -1 }, { -1, -1 }, "Label") {};
+	Group() {};
 	~Group() {};
 
-	virtual void Draw() override
+	virtual void Render(ImRect bounds) override
 	{
 	}
+
+	virtual const std::string& Type() { return "Container"; };
+	virtual const std::string& Guid() { return Guid::New(); };
 
 private:
 	std::string _text;
 };
 
 
+constexpr float def_Width = 100.0f;
+constexpr float def_Height = 30.0f;
+
+
+
+
 class Button : public VisualElement
 {
-typedef void(*OnClick)();
 public:
-	Button(const std::string& label, OnClick clickfn) : VisualElement({ -1, -1 }, {-1, -1}, "Button"), _onclick{ clickfn }, _label{ label } {};
-	Button(const std::string& label, ImVec2 position, ImVec2 size, OnClick clickfn) : VisualElement(position, size, "Button"), _onclick{ clickfn }, _label{ label } {};
+	typedef void(*OnClick)();
+
+
+public:
+	Button(const std::string& label, OnClick clickfn)
+		: _label{ label }, _onclick{ clickfn }
+	{};
+
 	~Button() {};
 
-	virtual void Draw() override 
+	virtual void Render(ImRect bounds) override
 	{
-		if (ImGui::Button(_label.c_str(), _size)) {
+		ImVec2 mp = ImGui::GetMousePos();
+		//ImVec2 offset = ImGui::GetWindowPos();
+		
+		bool hover = isWithinBounds(mp, bounds);
+		
+		ImDrawList* drawList = ImGui::GetWindowDrawList();
+		ImColor col = hover ? styleSheet.backgroundHoverColor : styleSheet.backgroundColor;
+
+		drawList->AddRectFilledMultiColor(bounds.start, bounds.end, col, col, styleSheet.backgroundHoverColor, styleSheet.backgroundHoverColor);
+
+		if (ImGui::IsMouseClicked(ImGuiMouseButton_::ImGuiMouseButton_Left) && hover) {
 			_onclick();
 		}
+
+		drawList->AddText(bounds.start, styleSheet.color, _label.c_str());
+		
 	}
+
+	virtual const std::string& Type() { return "Button"; };
+	virtual const std::string& Guid() { return Guid::New(); };
 
 	std::string _label;
 	OnClick _onclick;
 
 };
 
-class Label : public VisualElement 
+class Label : public VisualElement
 {
 public:
-	Label(const std::string& text) : VisualElement({ -1, -1 }, { -1, -1 }, "Label"), _text{ text } {};
+	Label(const std::string& text)
+		: _text{ text }
+	{};
 	~Label() {};
 
-	virtual void Draw() override
+	virtual void Render(ImRect bounds) override
 	{
 		ImGui::Text(_text.c_str());
 	}
+
+	virtual const std::string& Type() { return "Label"; };
+	virtual const std::string& Guid() { return Guid::New(); };
 
 private:
 	std::string _text;
