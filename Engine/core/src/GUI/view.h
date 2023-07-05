@@ -27,7 +27,7 @@ private:
 	int _windowFlags;
 	std::string _filepath;
 
-	struct VisualElement* _root = nullptr;
+	class VisualElement* _root = nullptr;
 	tinyxml2::XMLDocument document;
 
 };

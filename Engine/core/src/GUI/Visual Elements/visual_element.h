@@ -14,6 +14,12 @@ struct ImRect {
 	ImVec2 end;
 };
 
+struct ImColorState {
+	ImU32 normal = 0;
+	ImU32 active = 0;
+	ImU32 hover = 0;
+};
+
 class VisualElement {
 public:
 	///TODO! generate GUID
@@ -37,7 +43,7 @@ public:
 		
 		// draw margin area
 		{
-			ImVec2 start = ImGui::GetCursorPos();
+			ImVec2 start = ImGui::GetCursorScreenPos();
 			ImVec2 end = start;
 			end.x += margin.x + border.x + padding.x + styleSheet.width;
 			end.y += margin.y + border.y + padding.y + styleSheet.height;
@@ -55,7 +61,7 @@ public:
 			end.x += border.x + padding.x + styleSheet.width;
 			end.y += border.y + padding.y + styleSheet.height;
 
-			drawList->AddRectFilled(start, end, styleSheet.borderColor);
+			drawList->AddRectFilled(start, end, styleSheet.border_color.normal);
 		}
 
 		//draw padding area
@@ -67,8 +73,10 @@ public:
 			ImVec2 end = start;
 			end.x += padding.x + styleSheet.width;
 			end.y += padding.y + styleSheet.height;
+			
+			ImColor background = hover ? styleSheet.background_color.hover : styleSheet.background_color.normal;
 
-			drawList->AddRect(start, end, 0);
+			drawList->AddRectFilled(start, end, background);
 		}
 
 
@@ -84,56 +92,6 @@ public:
 
 			Render({start, end});
 		}
-
-		
-		//startPos.x += (margin.x / 2) + (border.x / 2) - (padding.x / 2);
-		//startPos.y += (margin.y / 2) + (border.y / 2) - (padding.y / 2);
-
-		//ImVec2 size = ImVec2(0, 0);
-		//size.x += startPos.x + styleSheet.width + (padding.x / 2);
-		//size.y += startPos.y + styleSheet.height + (padding.y / 2);
-
-		//ImVec2 borderStart = startPos;
-		//borderStart.x += (padding.x / 2) - (border.x / 2);
-		//borderStart.y += (padding.y / 2) - (border.y / 2);
-
-		//// draw content
-		//drawList->AddRectFilled(startPos, size, styleSheet.backgroundColor);
-
-		//ImGui::BeginChild("##MARGIN");
-
-		//// margin
-		//ImGui::Dummy({ 0, styleSheet.margin.x });
-		//ImGui::Dummy({ styleSheet.margin.y, 0 }); ImGui::SameLine();
-
-		//ImGui::PushStyleColor(ImGuiCol_FrameBg, 0xFFAAFFEE);
-
-		//{
-		//	ImGui::BeginChild("##BORDER");
-		//	// border
-		//	ImGui::Dummy({ 0, styleSheet.border.x });
-		//	ImGui::Dummy({ styleSheet.border.y, 0 }); ImGui::SameLine();
-
-		//	ImGui::PushStyleColor(ImGuiCol_FrameBg, ImGui::ColorConvertFloat4ToU32(styleSheet.backgroundColor));
-		//	ImGui::PushStyleColor(ImGuiCol_Button, ImGui::ColorConvertFloat4ToU32(styleSheet.backgroundColor));
-		//	ImGui::PushStyleColor(ImGuiCol_Text, ImGui::ColorConvertFloat4ToU32(styleSheet.color));
-
-		//	Render();
-
-		//	ImGui::PopStyleColor(3);
-
-		//	ImGui::SameLine(); ImGui::Dummy({ styleSheet.border.w, 0 });
-		//	ImGui::Dummy({ 0, styleSheet.border.z });
-		//	ImGui::EndChild();
-		//}
-
-		//ImGui::PopStyleColor();
-
-		//// margin
-		//ImGui::SameLine(); ImGui::Dummy({ styleSheet.margin.w, 0 });
-		//ImGui::Dummy({ 0, styleSheet.margin.z });
-
-		//ImGui::EndChild();
 
 	};
 
@@ -156,7 +114,8 @@ public:
 	void Remove(VisualElement* element) {
 		auto it = std::find(children.begin(), children.end(), element);
 		if (it != children.end()) {
-			std::remove(children.begin(), children.end(), element);
+			//std::remove(children.begin(), children.end(), element);
+			std::erase(children, element);
 		}
 	}
 
@@ -191,19 +150,18 @@ public:
 
 		ImVec4 padding	= { 0, 0, 0, 0 };
 		ImVec4 margin	= { 0, 0, 0, 0 };
+
 		ImVec4 border	= { 0, 0, 0, 0 };
-
-		ImColor color		= { 0, 0, 0, 0 };
-		ImColor borderColor = { 0, 0, 0, 0 };
-
-		ImColor backgroundColor = { 0, 0, 0, 0 };
-		ImColor backgroundHoverColor = { 0, 0, 0, 0 };
-
+		ImColorState border_color;
+		
+		ImColorState font_color;
+		ImColorState background_color;
+		
 	}styleSheet;
 
 protected:
 	virtual void Render(ImRect bounds) = 0;
-
+	bool hover = false;
 };
 
 class Group : public VisualElement
@@ -228,8 +186,6 @@ constexpr float def_Width = 100.0f;
 constexpr float def_Height = 30.0f;
 
 
-
-
 class Button : public VisualElement
 {
 public:
@@ -246,20 +202,21 @@ public:
 	virtual void Render(ImRect bounds) override
 	{
 		ImVec2 mp = ImGui::GetMousePos();
-		//ImVec2 offset = ImGui::GetWindowPos();
 		
-		bool hover = isWithinBounds(mp, bounds);
+		hover = isWithinBounds(mp, bounds);
 		
 		ImDrawList* drawList = ImGui::GetWindowDrawList();
-		ImColor col = hover ? styleSheet.backgroundHoverColor : styleSheet.backgroundColor;
 
-		drawList->AddRectFilledMultiColor(bounds.start, bounds.end, col, col, styleSheet.backgroundHoverColor, styleSheet.backgroundHoverColor);
+		ImColor background = hover ? styleSheet.background_color.hover : styleSheet.background_color.normal;
+		ImColor font = hover ? styleSheet.font_color.hover : styleSheet.font_color.normal;
+
+		drawList->AddRectFilled(bounds.start, bounds.end, background);
 
 		if (ImGui::IsMouseClicked(ImGuiMouseButton_::ImGuiMouseButton_Left) && hover) {
 			_onclick();
 		}
 
-		drawList->AddText(bounds.start, styleSheet.color, _label.c_str());
+		drawList->AddText(bounds.start, font, _label.c_str());
 		
 	}
 
