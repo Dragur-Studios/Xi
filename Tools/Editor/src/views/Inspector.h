@@ -9,8 +9,6 @@ public:
 	Inspector();
 	~Inspector();
 
-	virtual void Update() override;
-	virtual void HandleContextMenu() override;
-
+	
 };
 

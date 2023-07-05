@@ -37,11 +37,6 @@ public:
 	GraphView(const std::string& name);
 	virtual ~GraphView() {};
 
-	virtual void Update() override;
-	virtual void Render() override;
-	virtual void HandleContextMenu() override;
-
-
 
 protected:
 	std::string searchQuery;

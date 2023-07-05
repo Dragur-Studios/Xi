@@ -58,8 +58,8 @@ public:
 	Terminal();
 	~Terminal();
 
-	virtual void Update() override;
-	virtual void HandleContextMenu() override;
+	//virtual void Update() override;
+	//virtual void HandleContextMenu() override;
 
 
 private:

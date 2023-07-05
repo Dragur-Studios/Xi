@@ -11,8 +11,6 @@ public:
 	ProjectsView();
 	virtual ~ProjectsView();
 
-	virtual void Render() override;
-	virtual void Update();
 	virtual void HandleContextMenu();
 
 };

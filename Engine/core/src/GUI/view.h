@@ -2,11 +2,12 @@
 
 #include "pch.h"
 
+#include "Util/tinyxml2.h"
 
 class View 
 {
 public:
-	View(const std::string& name);
+	View(const std::string& name, const std::string& filepath="", int flags = 0);
 	virtual ~View();
 
 	void Draw();
@@ -14,21 +15,19 @@ public:
 	void Show();
 	void Hide();
 
-protected:
-	virtual void Update() = 0;
-	virtual void HandleContextMenu() = 0;
-
-protected:
-	void Render();
+	void Add(class VisualElement* element);
+	void Remove(class VisualElement* element);
 
 private:
-	bool show;
-	std::string name;
-	int windowFlags;
+	void Render(class VisualElement* node);
 
-	std::string xmlData;
+private:
+	bool _show; 
+	std::string _name;
+	int _windowFlags;
+	std::string _filepath;
 
-	void RenderVisualElement(struct VisualElement* node);
-	struct VisualElement* root = nullptr;
+	struct VisualElement* _root = nullptr;
+	tinyxml2::XMLDocument document;
 
 };

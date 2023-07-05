@@ -5,35 +5,39 @@
 
 #include "Util/tinyxml2.h"
 
-tinyxml2::XMLDocument xmlDocument;
 
-View::View(const std::string& name)
-	: show{ true }, name{ name }, windowFlags{ 0 }
-{
 
-}
+View::View(const std::string& name, const std::string& filepath, int flags)
+	: _show{ true }, _name{ name }, _windowFlags{ flags }, _filepath{filepath}, _root{new Group()}
+{ }
 
 View::~View()
 {
+	delete _root;
 }
 
-void View::Render()
-{
-	RenderVisualElement(root); 
+void View::Add(VisualElement* element) {
+	_root->Add(element);
 }
+
+void View::Remove(VisualElement* element) {
+	_root->Remove(element);
+}
+
+
 void View::Draw() 
 {
-	if (root == nullptr)
+	if (_root == nullptr) {
 		return;
+	}
 
-	if (show)
+	if (_show)
 	{
-		if (!ImGui::Begin(name.c_str(), &show, (ImGuiWindowFlags)windowFlags)) {
+		if (!ImGui::Begin(_name.c_str(), &_show, (ImGuiWindowFlags)_windowFlags)) {
 			ImGui::End();
 		}
 		else {
-			Update();
-			Render();
+			Render(_root);
 			ImGui::End();
 		}
 	}
@@ -41,27 +45,28 @@ void View::Draw()
 
 void View::Show()
 {
-	show = true;
+	_show = true;
 }
 
 void View::Hide()
 {
-	show = false;
+	_show = false;
 }
 
-void View::RenderVisualElement(VisualElement* node)
+void View::Render(VisualElement* node)
 {
 	if (node == nullptr)
 		return;
 
-	ImGui::SetCursorPos(node->position);
-	ImGui::SetNextWindowPos(node->size);
-	ImGui::Begin(node->guid.c_str());
-		
-	ImGui::End();
+	ImGui::SameLine();
+	ImGui::BeginChild(node->_guid.c_str());
 	
+	node->Draw();
+
 	for (auto& child : node->children)
 	{
-		RenderVisualElement(child);
+		Render(child);
 	}
+
+	ImGui::EndChild();
 }

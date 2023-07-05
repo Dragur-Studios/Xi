@@ -27,101 +27,89 @@ std::map<std::string, NodeData> GraphView::nodeTable=
 };
 
 GraphView::GraphView(const std::string& name) 
-	: View(name, "")
+	: View(name)
 {
 	renderer = new GraphRenderer();
 
 	renderer->AddNode<StartNode>(0, 0);
 };
 
-
-void GraphView::Update()
-{
-	renderer->Update();
-
-	HandleContextMenu();
-}
-
-void GraphView::Render()
-{	
-	renderer->Render();
-}
-
-void GraphView::HandleContextMenu()
-{
-	if (ImGui::IsMouseReleased(ImGuiMouseButton_::ImGuiMouseButton_Right) || (ImGui::IsKeyReleased(ImGuiKey_::ImGuiKey_Space) && ImGui::IsKeyDown(ImGuiKey_::ImGuiKey_LeftCtrl)) )
-	{
-		ImGui::OpenPopup("Context Menu");
-
-		LOG_INFO("Opening Context Menu!");
-	}
-	if (ImGui::BeginPopupContextItem("Context Menu")) {
-
-		auto mp = ImGui::GetIO().MousePos;
-
-		char buffer[256]{'\0'};
-
-		ImGui::InputTextWithHint("###SEARCH_BAR", "Search", buffer, (size_t)sizeof(buffer), ImGuiInputTextFlags_CallbackCharFilter | ImGuiInputTextFlags_CallbackAlways, SearchAndFilter, this);
-
-		searchQuery = std::string(buffer);
-
-		if (!searchQuery.empty()) {
-			ImGui::SameLine(); 
-			
-			if (ImGui::Button("Clear")) {
-				searchQuery.clear();
-			}
-			
-			for (const auto& kvp : searchResults)
-			{
-				auto name = kvp.first;
-				auto data = kvp.second;
-
-				if (ImGui::MenuItem(name.c_str())) {
-					CreateNode(name, data.type, mp);
-				}
-
-			}
-		
-		}
-		else {
-			int idx = 0;
-			for (const auto& kvp : nodeTable)
-			{
-				
-				auto name = kvp.first;
-				auto data = kvp.second;
-
-				bool group = !data.group.empty();
-				if (group) {
-					bool group_open = ImGui::BeginMenu(data.group.c_str());
-					if (group_open) {
-
-						if (ImGui::MenuItem(name.c_str())) {
-							CreateNode(name, data.type, mp);
-						}
-					
-						ImGui::EndMenu();
-					}
-
-				}
-				else {
-					
-					if (ImGui::MenuItem(name.c_str())) {
-						CreateNode(name, data.type, mp);
-					}
-				}
-				
-				
-				idx++;
-			}
-
-		
-		}
-		ImGui::EndPopup();
-	}
-
-}
+//
+//void GraphView::HandleContextMenu()
+//{
+//	if (ImGui::IsMouseReleased(ImGuiMouseButton_::ImGuiMouseButton_Right) || (ImGui::IsKeyReleased(ImGuiKey_::ImGuiKey_Space) && ImGui::IsKeyDown(ImGuiKey_::ImGuiKey_LeftCtrl)) )
+//	{
+//		ImGui::OpenPopup("Context Menu");
+//
+//		LOG_INFO("Opening Context Menu!");
+//	}
+//	if (ImGui::BeginPopupContextItem("Context Menu")) {
+//
+//		auto mp = ImGui::GetIO().MousePos;
+//
+//		char buffer[256]{'\0'};
+//
+//		ImGui::InputTextWithHint("###SEARCH_BAR", "Search", buffer, (size_t)sizeof(buffer), ImGuiInputTextFlags_CallbackCharFilter | ImGuiInputTextFlags_CallbackAlways, SearchAndFilter, this);
+//
+//		searchQuery = std::string(buffer);
+//
+//		if (!searchQuery.empty()) {
+//			ImGui::SameLine(); 
+//			
+//			if (ImGui::Button("Clear")) {
+//				searchQuery.clear();
+//			}
+//			
+//			for (const auto& kvp : searchResults)
+//			{
+//				auto name = kvp.first;
+//				auto data = kvp.second;
+//
+//				if (ImGui::MenuItem(name.c_str())) {
+//					CreateNode(name, data.type, mp);
+//				}
+//
+//			}
+//		
+//		}
+//		else {
+//			int idx = 0;
+//			for (const auto& kvp : nodeTable)
+//			{
+//				
+//				auto name = kvp.first;
+//				auto data = kvp.second;
+//
+//				bool group = !data.group.empty();
+//				if (group) {
+//					bool group_open = ImGui::BeginMenu(data.group.c_str());
+//					if (group_open) {
+//
+//						if (ImGui::MenuItem(name.c_str())) {
+//							CreateNode(name, data.type, mp);
+//						}
+//					
+//						ImGui::EndMenu();
+//					}
+//
+//				}
+//				else {
+//					
+//					if (ImGui::MenuItem(name.c_str())) {
+//						CreateNode(name, data.type, mp);
+//					}
+//				}
+//				
+//				
+//				idx++;
+//			}
+//
+//		
+//		}
+//		ImGui::EndPopup();
+//	}
+//
+//}
 
 void GraphView::CreateNode(const std::string& name, NodeType type, ImVec2 position)
 {
