@@ -2,8 +2,6 @@
 
 #include "pch.h"
 
-#include "Util/tinyxml2.h"
-
 class View 
 {
 public:
@@ -15,11 +13,17 @@ public:
 	void Show();
 	void Hide();
 
+	virtual void OnCreateGUI() {};
+
 	void Add(class VisualElement* element);
 	void Remove(class VisualElement* element);
 
+protected:
+	std::map<std::string, struct StyleSheet*> styleMap{};
+
 private:
-	void Render(class VisualElement* node);
+	void Render(class VisualElement* node, struct ImVec2& cursorPos);
+	void RenderChild(VisualElement* node, ImVec2& cursorPos);
 
 private:
 	bool _show; 
@@ -28,6 +32,5 @@ private:
 	std::string _filepath;
 
 	class VisualElement* _root = nullptr;
-	tinyxml2::XMLDocument document;
 
 };

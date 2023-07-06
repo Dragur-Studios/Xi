@@ -1,0 +1,22 @@
+XSS Documentation: 
+
+
+properties:
+width
+height
+rounding
+padding
+margin
+shadow
+shadow-color @<active, hover> 
+border
+border-color @<active, hover>
+background-color @<active, hover>
+color @<active, hover>
+
+Todo:
+
+fontsize
+
+
+ 

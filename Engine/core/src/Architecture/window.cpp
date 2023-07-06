@@ -260,6 +260,9 @@ void Window::Resize(int width, int height)
 void Window::AddView(View* v)
 {
 	views.push_back(v);
+	
+	v->OnCreateGUI();
+
 }
 
 void Window::RemoveView(View* v)

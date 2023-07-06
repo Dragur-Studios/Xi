@@ -7,3 +7,8 @@
 #define to_glm_vec(imvec) glm::vec2(imvec.x, imvec.y)
 
 #define to_im_vec(vector) ImVec2(vector.x, vector.y)
+
+#if _WIN32
+#undef min
+#undef max
+#endif

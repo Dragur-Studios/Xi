@@ -99,6 +99,11 @@
     <ClInclude Include="src\defs.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\Util\guid.h" />
+    <ClInclude Include="src\GUI\xss.h" />
+    <ClInclude Include="src\GUI\stylesheet.h" />
+    <ClInclude Include="src\GUI\Visual Elements\group.h" />
+    <ClInclude Include="src\GUI\Visual Elements\button.h" />
+    <ClInclude Include="src\GUI\Visual Elements\label.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Architecture\application.cpp">
@@ -182,5 +187,9 @@
     <ClCompile Include="src\Util\tinyxml2.cpp">
       <Filter>Util</Filter>
     </ClCompile>
+    <ClCompile Include="src\GUI\xss.cpp" />
+    <ClCompile Include="src\GUI\Visual Elements\group.cpp" />
+    <ClCompile Include="src\GUI\Visual Elements\button.cpp" />
+    <ClCompile Include="src\GUI\Visual Elements\label.cpp" />
   </ItemGroup>
 </Project>

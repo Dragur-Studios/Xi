@@ -1,0 +1,332 @@
+#pragma once
+#include "pch.h"
+#include "defs.h"
+
+#include "visual_element.h"
+
+#include "imgui/imgui.h"
+
+#include "Util/guid.h"
+
+
+struct ImRect {
+	ImVec2 start;
+	ImVec2 end;
+};
+
+struct ImColorState {
+	ImU32 normal = 0;
+	ImU32 active = 0;
+	ImU32 hover = 0;
+};
+
+enum class TextAlignment {
+	Top_Left,
+	Top_Middle,
+	Top_Right,
+	Middle_Right,
+	Bottom_Right,
+	Bottom_Middle,
+	Bottom_Left,
+	Middle_Left,
+	Middle
+};
+
+class VisualElement {
+public:
+	///TODO! generate GUID
+	VisualElement()
+	{ };
+
+	virtual ~VisualElement() {};
+
+	
+	void Draw(ImVec2 cursorPos) {
+
+		ImDrawList* drawList = ImGui::GetWindowDrawList();
+
+		//offset startposition by the padding, the margin, and the border sizes
+		auto margin = styleSheet.margin;
+		auto border = styleSheet.border;
+		auto padding = styleSheet.padding;
+		auto shadow = styleSheet.shadow;
+		
+		auto displaySize = ImGui::GetIO().DisplaySize;
+		
+		////draw shadow area
+		{
+			ImVec2 start = cursorPos;
+			start.x += margin.x / 2.0f;
+			start.y += margin.y / 2.0f;
+
+			ImVec2 end = start;
+			end.x += shadow.x + border.x + padding.x + styleSheet.width;
+			end.y += shadow.y + padding.y + styleSheet.height;
+
+			drawList->AddRectFilled(start, end, styleSheet.shadow_color.normal, styleSheet.rounding);
+		}
+
+		//draw content area
+		{
+			ImVec2 start = cursorPos;
+			start.x += (margin.x / 2.0f) + (border.x / 2.0f);
+			start.y += (margin.y / 2.0f) + (border.y / 2.0f);
+
+			ImVec2 end = start;
+			end.x += padding.x + styleSheet.width;
+			end.y += padding.y + styleSheet.height;
+
+			Render({start, end});
+		}
+
+		////draw border area
+		{
+			ImVec2 start = ImGui::GetCursorScreenPos();
+			start.x += margin.x / 2.0f;
+			start.y += margin.y / 2.0f;
+
+			ImVec2 end = start;
+			end.x += border.x + padding.x + styleSheet.width;
+			end.y += border.y + padding.y + styleSheet.height;
+
+			drawList->AddRect(start, end, styleSheet.border_color.normal, styleSheet.rounding, 0, styleSheet.border.x);
+		}
+
+	};
+
+	bool isWithinBounds(ImVec2 position, ImRect bounds) {
+		
+		// Flip the Y-axis position
+	
+		if (position.x >= bounds.start.x && position.x <= bounds.end.x &&
+			position.y >= bounds.start.y && position.y <= bounds.end.y)
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	void Add(VisualElement* element) {
+		children.push_back(element);
+	}
+
+	void Remove(VisualElement* element) {
+		auto it = std::find(children.begin(), children.end(), element);
+		if (it != children.end()) {
+			//std::remove(children.begin(), children.end(), element);
+			std::erase(children, element);
+		}
+	}
+
+	virtual const std::string& Type() = 0;
+	virtual const std::string& Guid() = 0;
+
+	template<typename T>
+	T Q(std::string name = "") {
+
+		for (auto& child : children)
+		{
+			bool override = name.empty();
+
+			if (typeid(child) == typeid(T) && (child.id == name || override)) {
+				return child;
+			}
+
+		}
+
+		return {};
+	}
+
+	// rect
+	ImVec2 _position;
+
+	std::vector<VisualElement*> children;
+
+	struct
+	{
+		float width = 0;
+		float height = 0;
+		float rounding = 0;
+
+		ImVec4 padding	= { 0, 0, 0, 0 };
+		ImVec4 margin	= { 0, 0, 0, 0 };
+		
+		ImVec4 shadow	= { 0, 0, 0, 0 };
+		ImColorState shadow_color;
+		
+		ImVec4 border	= { 0, 0, 0, 0 };
+		ImColorState border_color;
+		
+		TextAlignment text_align;
+		ImColorState font_color;
+		ImColorState background_color;
+		
+	}styleSheet;
+
+
+	ImVec2 AlignText(ImRect bounds, const std::string& text, TextAlignment alignment=TextAlignment::Top_Left) {
+		auto textPos = bounds.start;
+
+		auto size = ImGui::CalcTextSize(text.c_str());
+		auto center = ImVec2((bounds.end.x + bounds.start.x) / 2.0f, (bounds.end.y + bounds.start.y) / 2.0f);
+
+		switch (alignment)
+		{
+		case TextAlignment::Top_Left:
+			textPos.x += styleSheet.padding.x;
+			textPos.y += styleSheet.padding.y;
+			break;
+		case TextAlignment::Top_Middle:
+			textPos.y += styleSheet.padding.y;
+			textPos.x = center.x - (size.x / 2.0f);
+			break;
+		case TextAlignment::Top_Right:
+			textPos.y += styleSheet.padding.y;
+			textPos.x = bounds.end.x - (size.x) - styleSheet.padding.x;
+			break;
+		case TextAlignment::Middle_Right:
+			textPos.x = bounds.end.x - size.x - styleSheet.padding.x;
+			textPos.y = center.y - (size.y / 2.0f);
+			break;
+		case TextAlignment::Bottom_Right:
+			textPos.x = bounds.end.x - size.x - styleSheet.padding.x;
+			textPos.y = bounds.end.y - size.y - styleSheet.padding.y;
+			break;
+		case TextAlignment::Bottom_Middle:
+			textPos.x = center.x - (size.x / 2.0f);
+			textPos.y = bounds.end.y - size.y - styleSheet.padding.y;
+			break;
+		case TextAlignment::Bottom_Left:
+			textPos.x += styleSheet.padding.x;
+			textPos.y = bounds.end.y - size.y - styleSheet.padding.y;
+			break;
+		case TextAlignment::Middle_Left:
+			textPos.x += styleSheet.padding.x;
+			textPos.y = center.y - (size.y / 2.0f);
+			break;
+		case TextAlignment::Middle:
+			textPos = center;
+			textPos.x -= size.x / 2.0f;
+			textPos.y -= size.y / 2.0f;
+			break;
+
+		}
+
+		return textPos;
+	}
+protected:
+	virtual void Render(ImRect bounds) = 0;
+	bool hover = false;
+};
+
+class Group : public VisualElement
+{
+public:
+	Group() {};
+	~Group() {};
+
+	virtual void Render(ImRect bounds) override
+	{
+	}
+
+	virtual const std::string& Type() { return "Container"; };
+	virtual const std::string& Guid() { return Guid::New(); };
+
+private:
+	std::string _text;
+};
+
+
+constexpr float def_Width = 100.0f;
+constexpr float def_Height = 30.0f;
+
+
+class Button : public VisualElement
+{
+public:
+	typedef void(*OnClick)();
+
+
+public:
+	Button(const std::string& label, OnClick clickfn)
+		: _label{ label }, _onclick{ clickfn }
+	{};
+
+	~Button() {};
+
+	virtual void Render(ImRect bounds) override
+	{
+		ImVec2 mp = ImGui::GetMousePos();
+		
+		hover = isWithinBounds(mp, bounds);
+		
+		ImDrawList* drawList = ImGui::GetWindowDrawList();
+		drawList->Flags = ImDrawListFlags_::ImDrawListFlags_AntiAliasedFill;
+
+		ImColor background = hover ? styleSheet.background_color.hover : styleSheet.background_color.normal;
+		ImColor font = hover ? styleSheet.font_color.hover : styleSheet.font_color.normal;
+
+		// draw the containing rectangle. this will contain the border, padding and content size.
+		drawList->AddRectFilled(bounds.start, bounds.end, background, styleSheet.rounding);
+
+		if (ImGui::IsMouseClicked(ImGuiMouseButton_::ImGuiMouseButton_Left) && hover) {
+			_onclick();
+		}
+
+		drawList->AddText(AlignText(bounds, _label.c_str(), styleSheet.text_align), font, _label.c_str());
+		
+	}
+
+	virtual const std::string& Type() { return "Button"; };
+	virtual const std::string& Guid() { return Guid::New(); };
+
+	std::string _label;
+	OnClick _onclick;
+
+};
+
+class Label : public VisualElement
+{
+public:
+	Label(const std::string& text)
+		: _text{ text }
+	{
+		styleSheet.width = -1;
+		styleSheet.height = 30.0f;
+		styleSheet.padding = { 5, 5, 5, 5 };
+	};
+	~Label() {};
+
+	virtual void Render(ImRect bounds) override
+	{
+		styleSheet.width = ImGui::GetContentRegionMax().x;
+
+		ImDrawList* drawList = ImGui::GetWindowDrawList();
+		
+
+		/// TEMP  
+		{
+			drawList->Flags = ImDrawListFlags_::ImDrawListFlags_AntiAliasedFill;
+
+			ImColor background = hover ? styleSheet.background_color.hover : styleSheet.background_color.normal;
+			ImColor font = hover ? styleSheet.font_color.hover : styleSheet.font_color.normal;
+
+			// draw the containing rectangle. this will contain the border, padding and content size.
+			drawList->AddRectFilled(bounds.start, bounds.end, background, styleSheet.rounding);
+
+		}
+
+
+
+
+
+		drawList->AddText(AlignText(bounds, _text.c_str(), styleSheet.text_align), styleSheet.font_color.normal, _text.c_str());
+		
+	}
+
+	virtual const std::string& Type() { return "Label"; };
+	virtual const std::string& Guid() { return Guid::New(); };
+
+private:
+	std::string _text;
+};
