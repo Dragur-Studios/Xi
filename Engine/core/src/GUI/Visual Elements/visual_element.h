@@ -2,36 +2,40 @@
 #include "pch.h"
 #include "defs.h"
 
-
+#include "dependencies/imdom.h"
 
 class VisualElement {
 public:
-	VisualElement();
+	VisualElement(const std::string& type);
+	VisualElement(const std::string& type, const std::string& name);
 	virtual ~VisualElement();
 
+	void OnEvent();
 	
-	void Draw(struct ImVec2 cursorPos);
-
-	bool isWithinBounds(struct ImVec2 position, struct ImRect bounds);
-	
-	
+	bool isWithinBounds(ImVec2 position, ImRect bounds);
+		
 	void Add(VisualElement* element);
-
 	void Remove(VisualElement* element);
 
-	virtual const std::string& Type() = 0;
-	virtual const std::string& Guid() = 0;
+	virtual void OnCreateGUI() = 0;
+	
+	// state 	
+	bool _stop_propagation = false;
+	bool _hover = false;
+	bool _active = false;
+	bool _focus = false;
 
+	std::string _name = "";
+	std::string _id = "";
+	std::string _class = "";
+
+	ImRect _bounds;
 
 	std::vector<VisualElement*> children;
-
-	struct StyleSheet* styleSheet;
-		
-	struct ImVec2 AlignText(struct ImRect bounds, const std::string& text, enum TextAlignment alignment);
-	
 protected:
-	virtual void Render(ImRect bounds) = 0;
-	bool hover = false;
+	std::string _guid = "";
+	virtual void OnClickCallback() {};
+
 };
 
 

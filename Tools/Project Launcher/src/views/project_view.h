@@ -12,10 +12,10 @@ public:
 	virtual ~ProjectsView();
 
 	static void CreateProject();
-	virtual void OnCreateGUI() override;
 	virtual void HandleContextMenu();
-	static int counter;
 
+public:
+	virtual void OnCreateGUI() override;
 
 
 };

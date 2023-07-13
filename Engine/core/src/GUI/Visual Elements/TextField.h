@@ -2,15 +2,16 @@
 
 #include "visual_element.h"
 
-
-class Label : public VisualElement
+class TextField : public VisualElement
 {
 public:
-	Label(const std::string& text);
-	~Label();
+	TextField();
+	~TextField();
 
 	virtual void OnCreateGUI() override;
 
 private:
-	std::string _text;
+	std::string _data;
+
 };
+

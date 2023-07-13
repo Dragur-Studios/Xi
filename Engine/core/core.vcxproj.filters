@@ -78,10 +78,25 @@
     <ClInclude Include="src\GUI\GraphView\nodes.h">
       <Filter>GUI\GraphView</Filter>
     </ClInclude>
+    <ClInclude Include="src\GUI\Visual Elements\button.h">
+      <Filter>GUI\Visual Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GUI\Visual Elements\group.h">
+      <Filter>GUI\Visual Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GUI\Visual Elements\label.h">
+      <Filter>GUI\Visual Elements</Filter>
+    </ClInclude>
     <ClInclude Include="src\GUI\Visual Elements\visual_element.h">
       <Filter>GUI\Visual Elements</Filter>
     </ClInclude>
+    <ClInclude Include="src\GUI\stylesheet.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
     <ClInclude Include="src\GUI\view.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GUI\xss.h">
       <Filter>GUI</Filter>
     </ClInclude>
     <ClInclude Include="src\IO\FileSystem.h">
@@ -93,17 +108,18 @@
     <ClInclude Include="src\Project Generation\generate.h">
       <Filter>Project Generation</Filter>
     </ClInclude>
+    <ClInclude Include="src\Util\guid.h">
+      <Filter>Util</Filter>
+    </ClInclude>
     <ClInclude Include="src\Util\tinyxml2.h">
       <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="src\defs.h" />
     <ClInclude Include="src\pch.h" />
-    <ClInclude Include="src\Util\guid.h" />
-    <ClInclude Include="src\GUI\xss.h" />
-    <ClInclude Include="src\GUI\stylesheet.h" />
-    <ClInclude Include="src\GUI\Visual Elements\group.h" />
-    <ClInclude Include="src\GUI\Visual Elements\button.h" />
-    <ClInclude Include="src\GUI\Visual Elements\label.h" />
+    <ClInclude Include="src\GUI\Visual Elements\TextField.h" />
+    <ClInclude Include="src\GUI\helpers.h" />
+    <ClInclude Include="src\Dependencies\imdom.h" />
+    <ClInclude Include="src\GUI\XDocument\xdocument.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Architecture\application.cpp">
@@ -172,10 +188,22 @@
     <ClCompile Include="src\GUI\GraphView\graph_view.cpp">
       <Filter>GUI\GraphView</Filter>
     </ClCompile>
+    <ClCompile Include="src\GUI\Visual Elements\button.cpp">
+      <Filter>GUI\Visual Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUI\Visual Elements\group.cpp">
+      <Filter>GUI\Visual Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUI\Visual Elements\label.cpp">
+      <Filter>GUI\Visual Elements</Filter>
+    </ClCompile>
     <ClCompile Include="src\GUI\Visual Elements\visual_element.cpp">
       <Filter>GUI\Visual Elements</Filter>
     </ClCompile>
     <ClCompile Include="src\GUI\view.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUI\xss.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
     <ClCompile Include="src\IO\FileSystem.cpp">
@@ -187,9 +215,10 @@
     <ClCompile Include="src\Util\tinyxml2.cpp">
       <Filter>Util</Filter>
     </ClCompile>
-    <ClCompile Include="src\GUI\xss.cpp" />
-    <ClCompile Include="src\GUI\Visual Elements\group.cpp" />
-    <ClCompile Include="src\GUI\Visual Elements\button.cpp" />
-    <ClCompile Include="src\GUI\Visual Elements\label.cpp" />
+    <ClCompile Include="src\GUI\Visual Elements\TextField.cpp" />
+    <ClCompile Include="src\GUI\helpers.cpp" />
+    <ClCompile Include="src\Dependencies\imdom.cpp" />
+    <ClCompile Include="src\GUI\stylesheet.cpp" />
+    <ClCompile Include="src\GUI\XDocument\xdocument.cpp" />
   </ItemGroup>
 </Project>

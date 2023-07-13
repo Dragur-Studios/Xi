@@ -2,12 +2,14 @@
 
 #include "gui/stylesheet.h"
 
-Group::Group() 
-{};
+Group::Group()
+	: VisualElement("root")
+{
+};
 
 Group::~Group() 
 {};
 
-void Group::Render(ImRect bounds)
+void Group::OnCreateGUI()
 {
 }

@@ -1,47 +1,105 @@
 #pragma once
 
-#include "imgui/imgui.h"
+#include "pch.h"
+#include "defs.h"
 
-struct ImRect {
-    ImVec2 start;
-    ImVec2 end;
-};
+#include "dependencies/imdom.h"
 
-struct ImColorState {
-    ImU32 normal = 0;
-    ImU32 active = 0;
-    ImU32 hover = 0;
-};
 
 enum TextAlignment {
     Top_Left,
     Top_Middle,
     Top_Right,
-    Middle_Right,
+    Center_Right,
     Bottom_Right,
     Bottom_Middle,
     Bottom_Left,
-    Middle_Left,
-    Middle
+    Center_Left,
+    Center
 };
 
-struct StyleSheet
+enum FlexDirection {
+    Row,
+    Column
+};
+
+class iStyleProperty
+{   
+};
+
+template<typename T>
+class SingleValueProperty : public iStyleProperty {
+public:
+    T value;
+};
+
+template<typename T, int COUNT>
+class MultiValueProperty  : public iStyleProperty {
+public:
+    T value[COUNT];
+};
+
+class PropertyFactory {
+public:
+    template<typename T>
+    static iStyleProperty* SingleValue() {
+        try {
+
+            auto address = new SingleValueProperty<T>();
+            return (iStyleProperty*)address;
+        }
+        catch (const std::exception& ex) {
+            LOG_ERROR("Memory could not be allocated for a SVP");
+            return nullptr;
+        }    
+    };
+
+    template<typename T, int COUNT>
+    static iStyleProperty* MultiValue() {
+        try {
+
+            auto address = new MultiValueProperty<T, COUNT>();
+            return (iStyleProperty*)address;
+        }
+        catch (const std::exception& ex) {
+            LOG_ERROR("Memory could not be allocated for a SVP");
+            return nullptr;
+        }
+
+    }
+
+    static void Destroy(iStyleProperty* address) {
+        
+        try {
+            delete ((void*)address);
+        }
+        catch (const std::exception& ex) {
+            LOG_ERROR("Memory could not be freed for a SVP");
+        }
+    }
+};
+
+
+class StyleSheet
 {
-    float width = 0;
-    float height = 0;
-    float rounding = 0;
+public:
+    StyleSheet(){};
+    ~StyleSheet() {};
 
-    ImVec4 padding = { 0, 0, 0, 0 };
-    ImVec4 margin = { 0, 0, 0, 0 };
-
-    ImVec4 shadow = { 0, 0, 0, 0 };
-    ImColorState shadow_color = { 0x11000000, 0x11000000,0x11000000 };
-
-    ImVec4 border = { 0, 0, 0, 0 };
-    ImColorState border_color = { 0xFF000000, 0xFF161616, 0xFF161616 };
-
-    TextAlignment text_align = TextAlignment::Top_Left;
-    ImColorState font_color = { 0xFFEEEEEE, 0xFFEEEEEE, 0xFFEEEEEE };
-    ImColorState background_color = { 0xFF242424, 0xFF161616, 0xFF242424 };
+    std::map<std::string, iStyleProperty*> properties ={
+        {"width", PropertyFactory::SingleValue<float>()},
+        {"height", PropertyFactory::SingleValue<float>()},
+        {"rounding", PropertyFactory::SingleValue<float>()},
+        {"padding", PropertyFactory::MultiValue<float, 4>()},
+        {"margin", PropertyFactory::MultiValue<float, 4>()},
+        {"shadow", PropertyFactory::MultiValue<float, 4>()},
+        {"border", PropertyFactory::MultiValue<float, 4>()},
+        {"shadow-color", PropertyFactory::SingleValue<ImColorState>()},
+        {"text-align", PropertyFactory::SingleValue<TextAlignment>()},
+        {"color", PropertyFactory::SingleValue<ImColorState>()},
+        {"background-color", PropertyFactory::SingleValue<ImColorState>()},
+        {"border-color", PropertyFactory::SingleValue<ImColorState>()},
+        {"flex-direction", PropertyFactory::SingleValue<FlexDirection>()}
+    };
 
 };

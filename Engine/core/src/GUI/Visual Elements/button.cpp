@@ -1,32 +1,59 @@
 #include "button.h"
 
 #include "gui/stylesheet.h"
+#include "gui/helpers.h"
+#include <GUI/xss.h>
 
 Button::Button(const std::string& label, OnClick clickfn)
-	: _label{ label }, _onclick{ clickfn }
+	: VisualElement("button"), _label { label }, _onclick{std::move(clickfn)}
 {};
+
+Button::Button(const std::string& label, const std::string& name, OnClick clickfn) : VisualElement("button", name), _label{ label }, _onclick{ clickfn}{
+
+}
+
 Button::~Button() 
 {};
 
-void Button::Render(ImRect bounds)
+void Button::OnCreateGUI()
 {
-	ImVec2 mp = ImGui::GetMousePos();
-
-	hover = isWithinBounds(mp, bounds);
-
 	ImDrawList* drawList = ImGui::GetWindowDrawList();
 	drawList->Flags = ImDrawListFlags_::ImDrawListFlags_AntiAliasedFill;
+	
 
-	ImColor background = hover ? styleSheet->background_color.hover : styleSheet->background_color.normal;
-	ImColor font = hover ? styleSheet->font_color.hover : styleSheet->font_color.normal;
+	auto styleSheet = XssEngine::GetStyleSheet(this);
+	auto rounding = (SingleValueProperty<float>*)styleSheet->properties["rounding"];
+	auto text_align = (SingleValueProperty<TextAlignment>*)styleSheet->properties["text-align"];
+	auto background_color = (SingleValueProperty<ImColorState>*) styleSheet->properties["background-color"];
+	auto font_color = (SingleValueProperty<ImColorState>*) styleSheet->properties["font-color"];
+	auto border_color = (SingleValueProperty<ImColorState>*) styleSheet->properties["border-color"];
 
-	// draw the containing rectangle. this will contain the border, padding and content size.
-	drawList->AddRectFilled(bounds.start, bounds.end, background, styleSheet->rounding);
+	ImColor _background =
+		_hover ?
+		background_color->value.hover :
+		_active ?
+		background_color->value.active :
+		background_color->value.normal;
 
-	if (ImGui::IsMouseClicked(ImGuiMouseButton_::ImGuiMouseButton_Left) && hover) {
-		_onclick();
-	}
+	ImColor _font = _hover ?
+		font_color->value.hover :
+		_active ?
+		font_color->value.active :
+		font_color->value.normal;
 
-	drawList->AddText(AlignText(bounds, _label.c_str(), styleSheet->text_align), font, _label.c_str());
+	ImColor _border =
+		_hover ?
+		border_color->value.hover :
+		_active ?
+		border_color->value.active :
+		border_color->value.normal;
+	
+	drawList->AddRectFilled(_bounds.start, _bounds.end, _background, rounding->value);
+	drawList->AddText(AlignText(this, _label.c_str(), text_align->value), _font, _label.c_str());
 
+}
+
+void Button::OnClickCallback()
+{
+	_onclick();
 }

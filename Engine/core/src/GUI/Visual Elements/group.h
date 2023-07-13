@@ -9,12 +9,7 @@ public:
 	Group() ;
 	~Group() ;
 
-	virtual void Render(struct ImRect bounds) override;
-
-	
-
-	virtual const std::string& Type() { return "Container"; };
-	virtual const std::string& Guid() { return Guid::New(); };
+	virtual void OnCreateGUI() override;
 
 private:
 	std::string _text;

@@ -13,10 +13,13 @@ border
 border-color @<active, hover>
 background-color @<active, hover>
 color @<active, hover>
+text-align
 
 Todo:
 
 fontsize
 
+text-field/area
+int, float, double, vec2, vec3, vec4 field
 
  

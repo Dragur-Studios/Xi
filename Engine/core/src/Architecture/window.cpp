@@ -13,6 +13,7 @@
 #include "IO/FileSystem.h"
 #include <string>
 #include <sstream>
+#include <GUI/xss.h>
 
 
 
@@ -259,9 +260,8 @@ void Window::Resize(int width, int height)
 
 void Window::AddView(View* v)
 {
-	views.push_back(v);
-	
 	v->OnCreateGUI();
+	views.push_back(v);
 
 }
 
@@ -287,10 +287,10 @@ void Window::DrawFrame()
 
 	bool show = true;
 	showDockSpace(&show);
-
-
+	
 
 	for (const auto v : views) {
+		v->Update();
 		v->Draw();
 	}
 
