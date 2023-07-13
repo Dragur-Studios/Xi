@@ -5,22 +5,13 @@
 #include "architecture/application.h"
 #include "architecture/game.h"
 
-/// DLL
-#define _Z 0
-#define _D 1
+#include "IO/xenv.h"
 
-#ifdef _DEBUG
-#if _Z
-#define RUNTIME_DLL_PATH "Z:/Dev/Xi/Build/Runtime/"
-#elif _D
-#define RUNTIME_DLL_PATH "D:/Dev/Draugr Studios/Xi/Build/Runtime/"
-#endif
-#else
-#define EDITOR_DLL_PATH ""
-#endif
+#define ENGINE_PATH "engine_path"
 
-
-#define ATTACH_EDITOR(project) HMODULE editorDLL = LoadLibraryA(RUNTIME_DLL_PATH "Editor.dll");\
+#define _EDITOR_(project)if(!XEnv::Load("config.env")) return 1;\
+auto path = XEnv::Get(ENGINE_PATH);\
+HMODULE launcherDLL = LoadLibraryA((path +"Editor.dll");\
 if (editorDLL == nullptr)\
 {\
 Debug::Log("Editor DLL has not been loaded!"); \
@@ -45,7 +36,9 @@ editor->OnShutdown();\
 
 
 
-#define ATTACH_PLAYER(project) HMODULE playerDLL = LoadLibraryA(RUNTIME_DLL_PATH "Player.dll");\
+#define _PLAYER_(project)if(!XEnv::Load("config.env")) return 1;\
+auto path = XEnv::Get(ENGINE_PATH);\
+HMODULE launcherDLL = LoadLibraryA((path + "Player.dll");\
 if (playerDLL == nullptr)\
 {\
 Debug::Log("Player DLL has not been loaded!"); \
@@ -69,7 +62,9 @@ player->OnTick();\
 player->OnShutdown();\
 
 
-#define ATTACK_LAUNCHER() HMODULE launcherDLL = LoadLibraryA(RUNTIME_DLL_PATH "Project Launcher.dll");\
+#define _LAUNCHER_() if(!XEnv::Load("config.env")) return 1;\
+auto path = XEnv::Get(ENGINE_PATH);\
+HMODULE launcherDLL = LoadLibraryA((path + "Project Launcher.dll").c_str());\
 if(launcherDLL == nullptr)\
 {\
 Debug::Log("XiLauncher Could not be found? are you sure you installed the assymbley");\

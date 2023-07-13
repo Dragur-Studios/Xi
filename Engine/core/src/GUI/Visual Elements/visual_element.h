@@ -31,7 +31,7 @@ public:
 
 	ImRect _bounds;
 
-	std::vector<VisualElement*> children;
+	std::vector<VisualElement*> _children;
 protected:
 	std::string _guid = "";
 	virtual void OnClickCallback() {};

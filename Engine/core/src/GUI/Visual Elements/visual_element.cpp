@@ -22,7 +22,9 @@ VisualElement::VisualElement(const std::string& type, const std::string& name)
 
 VisualElement::~VisualElement()
 {
+	_children.clear();
 }
+
 
 void VisualElement::OnEvent()
 {
@@ -59,13 +61,13 @@ bool VisualElement::isWithinBounds(ImVec2 position, ImRect bounds)
 
 void VisualElement::Add(VisualElement* element)
 {
-	children.push_back(element);
+	_children.push_back(element);
 }
 
 void VisualElement::Remove(VisualElement* element)
 {
-	auto it = std::find(children.begin(), children.end(), element);
-	if (it != children.end()) {
-		std::erase(children, element);
+	auto it = std::find(_children.begin(), _children.end(), element);
+	if (it != _children.end()) {
+		std::erase(_children, element);
 	}
 }

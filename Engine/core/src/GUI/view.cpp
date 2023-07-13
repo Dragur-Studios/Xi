@@ -4,10 +4,10 @@
 
 #include "XDocument/xdocument.h"
 
-View::View(const std::string& name, int flags)
-	: _show{ true }, _name{ name }, _windowFlags{ flags }
+View::View(const std::string& name, const std::string& modelPath, const std::string& stylePath, int flags)
+	: _show{ true }, _name{ name }, _windowFlags{ flags }, _styleSheetfilepath{stylePath}, _filepath{modelPath}
 { 	
-	_document = new XDocument();
+	_document = new XDocument(_filepath, _styleSheetfilepath);
 }
 
 View::~View()
@@ -16,11 +16,13 @@ View::~View()
 
 void View::Update()
 {
+
 	_document->Update();
 }
 
 void View::Compile() {
 	_compile = true;
+	_document->Compile();
 }
 
 void View::Draw() 
@@ -31,8 +33,10 @@ void View::Draw()
 			ImGui::End();
 		}
 		else 
-		{
+		{	
 			_document->Draw();
+			OnGUI();
+
 			ImGui::End();
 		}
 	}

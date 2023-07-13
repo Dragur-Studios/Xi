@@ -5,8 +5,9 @@
 
 #include "xss.h"
 
-ImVec2 AlignText(VisualElement* element, const std::string& text, TextAlignment alignment)
+ImVec2 AlignText(VisualElement* element, const std::string& text, int alignment)
 {
+	ImTextAlignment align = (ImTextAlignment)alignment;
 	auto bounds = element->_bounds;
 
 	auto textPos = bounds.start;
@@ -18,41 +19,41 @@ ImVec2 AlignText(VisualElement* element, const std::string& text, TextAlignment 
 
 	auto padding = (MultiValueProperty<float, 4>*)styleSheet->properties["padding"];
 
-	switch (alignment)
+	switch (align)
 	{
-	case TextAlignment::Top_Left:
+	case ImTextAlignment::Top_Left:
 		textPos.x += padding->value[0];
 		textPos.y += padding->value[1];
 		break;
-	case TextAlignment::Top_Middle:
+	case ImTextAlignment::Top_Middle:
 		textPos.y += padding->value[1];
 		textPos.x = center.x - (size.x / 2.0f);
 		break;
-	case TextAlignment::Top_Right:
+	case ImTextAlignment::Top_Right:
 		textPos.y += padding->value[1];
 		textPos.x = bounds.end.x - (size.x) - padding->value[0];
 		break;
-	case TextAlignment::Center_Right:
+	case ImTextAlignment::Center_Right:
 		textPos.x = bounds.end.x - size.x - padding->value[0];
 		textPos.y = center.y - (size.y / 2.0f);
 		break;
-	case TextAlignment::Bottom_Right:
+	case ImTextAlignment::Bottom_Right:
 		textPos.x = bounds.end.x - size.x - padding->value[0];
 		textPos.y = bounds.end.y - size.y - padding->value[1];
 		break;
-	case TextAlignment::Bottom_Middle:
+	case ImTextAlignment::Bottom_Middle:
 		textPos.x = center.x - (size.x / 2.0f);
 		textPos.y = bounds.end.y - size.y - padding->value[1];
 		break;
-	case TextAlignment::Bottom_Left:
+	case ImTextAlignment::Bottom_Left:
 		textPos.x += padding->value[0];
 		textPos.y = bounds.end.y - size.y - padding->value[1];
 		break;
-	case TextAlignment::Center_Left:
+	case ImTextAlignment::Center_Left:
 		textPos.x += padding->value[0];
 		textPos.y = center.y - (size.y / 2.0f);
 		break;
-	case TextAlignment::Center:
+	case ImTextAlignment::Center:
 		textPos = center;
 		textPos.x -= size.x / 2.0f;
 		textPos.y -= size.y / 2.0f;

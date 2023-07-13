@@ -24,13 +24,16 @@
 #define ENABLE_CRT_MEMORY_LEAK_DETECTION() ((void)0)
 #endif
 
+#include "IO/xenv.h"
 
 int main() {
 	// Enable CRT memory leak detection
 	ENABLE_CRT_MEMORY_LEAK_DETECTION();
 
 	// ATTACH THE PROJECT LAUNCHER
-	ATTACK_LAUNCHER();
+
+	
+	_LAUNCHER_();
 	//std::string project_name;
 
 	//std::cout << "enter project name" << std::endl;

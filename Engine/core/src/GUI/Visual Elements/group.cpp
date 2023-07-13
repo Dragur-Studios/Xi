@@ -3,7 +3,7 @@
 #include "gui/stylesheet.h"
 
 Group::Group()
-	: VisualElement("root")
+	: VisualElement("group")
 {
 };
 

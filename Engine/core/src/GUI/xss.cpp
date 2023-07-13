@@ -5,6 +5,8 @@
 
 #include "Visual Elements/visual_element.h"
 
+#include "IO/file_helpers.h"
+
 float lerp(float v0, float v1, float t) {
     return (1 - t) * v0 + t * v1;
 }
@@ -26,24 +28,6 @@ ImVec4 ExtractImVec4(const std::string& value)
     valueStream.clear();
 
     return vec4Value;
-}
-
-std::string TrimWhitespace(const std::string& str)
-{
-    // Find the first non-whitespace character
-    std::size_t start = str.find_first_not_of(" \t");
-
-    if (start == std::string::npos)
-    {
-        // If the string is all whitespace, return an empty string
-        return "";
-    }
-
-    // Find the last non-whitespace character
-    std::size_t end = str.find_last_not_of(" \t");
-
-    // Extract the substring between the first and last non-whitespace characters
-    return str.substr(start, end - start + 1);
 }
 
 std::map<std::string, class StyleSheet*> XssEngine::styleMap{};
@@ -107,53 +91,53 @@ ImU32 ParseColorValue(const std::string& rgba)
     }
 }
 
-void XssEngine::ParseStyleProperty(const std::string& property, const std::string& value, StyleSheet& styleSheet, ImVec2 windowSize)
+void XssEngine::ParseStyleProperty(const std::string& property, const std::string& value, StyleSheet& styleSheet)
 {
     auto key = TrimWhitespace(property);
     auto val = TrimWhitespace(value);
 
     if (key == "width")
     {
-        if (val.contains("%")) {
-            auto numStr = val;
-            numStr.pop_back(); // remove %
-            
-            float num = std::atof(numStr.c_str());
-            
-            if (num > 100.0f) num == 100.0f;
-            if (num < 0.0f) num == 0.0f;
+        //if (val.contains("%")) {
+        //    auto numStr = val;
+        //    numStr.pop_back(); // remove %
+        //    
+        //    float num = std::atof(numStr.c_str());
+        //    
+        //    if (num > 100.0f) num == 100.0f;
+        //    if (num < 0.0f) num == 0.0f;
 
-            float t = num / 100.0f;
-            
-            auto prop = static_cast<SingleValueProperty<float>*>(styleSheet.properties["width"]);
-            prop->value = lerp(0.0f, windowSize.x, t);
+        //    float t = num / 100.0f;
+        //    
+        //    auto prop = static_cast<SingleValueProperty<float>*>(styleSheet.properties["width"]);
+        //    prop->value = lerp(0.0f, windowSize.x, t);
 
-        }
-        else {
+        //}
+        //else {
             auto prop = static_cast<SingleValueProperty<float>*>(styleSheet.properties["width"]);
             prop->value = std::stof(val);
-        }
+        //}
     }
     else if (key == "height")
     {
-        if (val.contains("%")) {
-            auto numStr = val;
-            numStr.pop_back(); // remove %
+        //if (val.contains("%")) {
+        //    auto numStr = val;
+        //    numStr.pop_back(); // remove %
 
-            float num = std::atof(numStr.c_str());
+        //    float num = std::atof(numStr.c_str());
 
-            if (num > 100.0f) num == 100.0f;
-            if (num < 0.0f) num == 0.0f;
+        //    if (num > 100.0f) num == 100.0f;
+        //    if (num < 0.0f) num == 0.0f;
 
-            float t = num / 100.0f;
+        //    float t = num / 100.0f;
 
-            auto prop = static_cast<SingleValueProperty<float>*>(styleSheet.properties["height"]);
-            prop->value = lerp(0.0f, windowSize.y, t);
-        }
-        else {
+        //    auto prop = static_cast<SingleValueProperty<float>*>(styleSheet.properties["height"]);
+        //    prop->value = lerp(0.0f, windowSize.y, t);
+        //}
+        //else {
             auto prop = static_cast<SingleValueProperty<float>*>(styleSheet.properties["height"]);
             prop->value = std::stof(val);
-        }
+        //}
     }
     else if (key == "rounding")
     {
@@ -179,38 +163,38 @@ void XssEngine::ParseStyleProperty(const std::string& property, const std::strin
         prop->value[3] = v4.w;
     }
     else if (key == "text-align") {
-        auto prop = static_cast<SingleValueProperty<TextAlignment>*>(styleSheet.properties["text-align"]);
+        auto prop = static_cast<SingleValueProperty<ImTextAlignment>*>(styleSheet.properties["text-align"]);
         
         if (value == "center") {
-            prop->value = TextAlignment::Center;
+            prop->value = ImTextAlignment::Center;
         }
         else if (value == "center-left") {
-            prop->value = TextAlignment::Center;
+            prop->value = ImTextAlignment::Center;
         }
         else if (value == "top-left") {
-            prop->value = TextAlignment::Center;
+            prop->value = ImTextAlignment::Center;
         }
         else if (value == "bottom-left") {
-            prop->value = TextAlignment::Center;
+            prop->value = ImTextAlignment::Center;
         }
         else if (value == "center-right") {
-            prop->value = TextAlignment::Center;
+            prop->value = ImTextAlignment::Center;
         }
         else if (value == "top-right") {
-            prop->value = TextAlignment::Center;
+            prop->value = ImTextAlignment::Center;
         }
         else if (value == "bottom-right") {
-            prop->value = TextAlignment::Center;
+            prop->value = ImTextAlignment::Center;
         }
     }
     else if (key == "flex-direction") {
-        auto prop = static_cast<SingleValueProperty<FlexDirection>*>(styleSheet.properties["flex-direction"]);
+        auto prop = static_cast<SingleValueProperty<ImFlexDirection>*>(styleSheet.properties["flex-direction"]);
 
         if (value == "row") {
-            prop->value = FlexDirection::Row;
+            prop->value = ImFlexDirection::Row;
         }
         else if (value == "column") {
-            prop->value = FlexDirection::Column;
+            prop->value = ImFlexDirection::Column;
         }
         else {
             LOG_ERROR("Flex-Direction Value not Recognized.");
@@ -320,13 +304,13 @@ void XssEngine::ParseStyleProperty(const std::string& property, const std::strin
     
 }
 
-void XssEngine::Compile(const std::string& filepath, ImVec2 windowSize)
+void XssEngine::Compile(const std::string& filepath)
 {
     std::string xss_buffer;
 
     FileSystem::File::Read(filepath, xss_buffer);
 
-    XssEngine::Parse(xss_buffer, windowSize);
+    XssEngine::Parse(xss_buffer);
 }
 
 StyleSheet* XssEngine::GetClass(const std::string& className)
@@ -343,27 +327,74 @@ StyleSheet* XssEngine::GetName(const std::string& name)
     return styleMap["." + name];
 }
 
-void XssEngine::UpdateNameVars(const std::string selector, StyleSheet& sheet)
+void XssEngine::UpdateNameVars(const std::string& selector, StyleSheet& sheet)
 {
-    auto other = GetName(selector);
-
-    //sheet.width = other->width;
-    //sheet.height = other->height;
-    //sheet.rounding = other->rounding;
-    //sheet.padding = other->padding;
-    //sheet.margin = other->margin;
-    //sheet.shadow = other->shadow;
-    //sheet.shadow_color = other->shadow_color;
-    //sheet.border = other->border;
-    //sheet.border_color = other->border_color;
-    //sheet.text_align = other->text_align;
-    //sheet.font_color = other->font_color;
-    //sheet.background_color = other->background_color;
+    // Get the named selector properties
+    auto namedProperties = GetName(selector);
+    
+    // Ensure the named selector exists and has properties
+    if (namedProperties != nullptr && !namedProperties->properties.empty())
+    {
+        // Iterate over each property in the named selector
+        for (const auto& namedProperty : namedProperties->properties)
+        {
+            const std::string& propertyName = namedProperty.first;
+            auto propertyValue = namedProperty.second;
+            
+            // Find the corresponding property in the stylesheet
+            // first attempt to see if its a single value property 
+            
+            if (static_cast<SingleValueProperty<float>*>(propertyValue) != nullptr) {
+                auto val = static_cast<SingleValueProperty<float>*>(propertyValue)->value;
+                if (val == -1)
+                    continue;
+            }
+            else if(static_cast<SingleValueProperty<ImTextAlignment>*>(propertyValue) != nullptr) {
+                auto val = static_cast<SingleValueProperty<ImTextAlignment>*>(propertyValue)->value;
+                if (val == ImTextAlignment::None)
+                    continue;
+            }
+            else if (static_cast<SingleValueProperty<ImFlexDirection>*>(propertyValue) != nullptr) {
+                auto val = static_cast<SingleValueProperty<ImFlexDirection>*>(propertyValue)->value;
+                if (val == ImFlexDirection::None)
+                    continue;
+            }
+            else if (static_cast<MultiValueProperty<float, 4>*>(propertyValue) != nullptr) {
+                auto prop = static_cast<MultiValueProperty<float, 4>*>(propertyValue);
+                if (prop->value[0] == -1 || prop->value[1] == -1) {
+                    continue;
+                }
+            }
+            auto it = sheet.properties.find(propertyName);
+            
+            // Update the property value in the stylesheet if it exists and is different
+            if (it != sheet.properties.end() && it->second != propertyValue)
+            {
+                it->second = propertyValue;
+            }
+        }
+    }
 }
 
-void XssEngine::UpdateIDVars(const std::string selector, StyleSheet& sheet)
+
+void XssEngine::UpdateIDVars(const std::string& selector, StyleSheet& sheet)
 {
     auto temp = GetID(selector);
+    // for each property in the new value
+    for (auto prop : temp->properties)
+    {
+        // find the corrisponding property in the stylesheet we are updating
+        auto it = sheet.properties.find(prop.first);
+        // as long as its found
+        if (it != sheet.properties.end()) {
+            // ensure that its not already the same value as prior
+            if (prop.second != it->second) {
+                // assign the value found to the stylesheet
+                it->second = prop.second;
+            }
+        }
+    }
+
 }
 
 StyleSheet* XssEngine::GetStyleSheet(VisualElement* element)
@@ -389,7 +420,7 @@ StyleSheet* XssEngine::GetStyleSheet(VisualElement* element)
 
 
 
-void XssEngine::Parse(const std::string& xss, ImVec2 windowSize)
+void XssEngine::Parse(const std::string& xss)
 {
     std::istringstream iss(xss);
     std::string line;
@@ -431,9 +462,13 @@ void XssEngine::Parse(const std::string& xss, ImVec2 windowSize)
                     // Parse the property-value pair using the updated ParseStyleProperties function
                     
                     auto sheet = styleMap.at(currentSelector);
-                    ParseStyleProperty(property, value, *sheet, windowSize);
+                    ParseStyleProperty(property, value, *sheet);
                 }
             }
         }
     }
 }
+
+
+
+

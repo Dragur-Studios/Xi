@@ -7,7 +7,7 @@
 class View 
 {
 public:
-	View(const std::string& name, int flags = 0);
+	View(const std::string& name, const std::string& modelPath, const std::string& stylePath, int flags = 0);
 	virtual ~View();
 
 	void Update();
@@ -20,6 +20,7 @@ public:
 	
 public:// interface methods
 	virtual void OnCreateGUI() {};
+	virtual void OnGUI() { };
 
 protected:
 	
@@ -30,6 +31,7 @@ protected:
 	std::string _name;
 	int _windowFlags;
 	std::string _filepath;
+	std::string _styleSheetfilepath;
 
 
 };

@@ -3,7 +3,7 @@
 #include "imgui/imgui.h"
 
 Terminal::Terminal()
-	: View("Terminal", ImGuiWindowFlags_::ImGuiWindowFlags_NoScrollbar), stdInterceptor{nullptr}
+	: View("Terminal", "", "", ImGuiWindowFlags_::ImGuiWindowFlags_NoScrollbar), stdInterceptor{nullptr}
 {
 	stdInterceptor = new ImGuiStreamInterceptor(std::cout);
 

@@ -1,0 +1,16 @@
+<root>
+    <group id="top">
+        <label>Xss Control</label>
+        <button name="recompile_button">Recompile</button>
+        <group id="buttons_group">
+            <button name="1">1</button>
+            <button name="2">2</button>
+            <button name="3">3</button>
+            <button name="4">4</button>
+            <button name="5">5</button>
+        </group>
+    </group>
+    <group id="bottom">
+        <textfield hint="put some text here"/>
+    </group>
+</root>
